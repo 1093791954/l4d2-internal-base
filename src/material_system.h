@@ -1,0 +1,143 @@
+#pragma once
+
+#define MATERIAL_SYSTEM_INTERFACE_VERSION "VMaterialSystem080"
+
+#include "mem.h"
+
+using material_handle_t = unsigned short;
+
+enum {
+	MATERIAL_RT_DEPTH_SHARED = 0x0,
+	MATERIAL_RT_DEPTH_SEPARATE = 0x1,
+	MATERIAL_RT_DEPTH_NONE = 0x2,
+	MATERIAL_RT_DEPTH_ONLY = 0x3,
+};
+
+enum {
+	MATERIAL_VAR_DEBUG = (1 << 0),
+	MATERIAL_VAR_NO_DEBUG_OVERRIDE = (1 << 1),
+	MATERIAL_VAR_NO_DRAW = (1 << 2),
+	MATERIAL_VAR_USE_IN_FILLRATE_MODE = (1 << 3),
+	MATERIAL_VAR_VERTEXCOLOR = (1 << 4),
+	MATERIAL_VAR_VERTEXALPHA = (1 << 5),
+	MATERIAL_VAR_SELFILLUM = (1 << 6),
+	MATERIAL_VAR_ADDITIVE = (1 << 7),
+	MATERIAL_VAR_ALPHATEST = (1 << 8),
+	MATERIAL_VAR_MULTIPASS = (1 << 9),
+	MATERIAL_VAR_ZNEARER = (1 << 10),
+	MATERIAL_VAR_MODEL = (1 << 11),
+	MATERIAL_VAR_FLAT = (1 << 12),
+	MATERIAL_VAR_NOCULL = (1 << 13),
+	MATERIAL_VAR_NOFOG = (1 << 14),
+	MATERIAL_VAR_IGNOREZ = (1 << 15),
+	MATERIAL_VAR_DECAL = (1 << 16),
+	MATERIAL_VAR_ENVMAPSPHERE = (1 << 17),
+	MATERIAL_VAR_NOALPHAMOD = (1 << 18),
+	MATERIAL_VAR_ENVMAPCAMERASPACE = (1 << 19),
+	MATERIAL_VAR_BASEALPHAENVMAPMASK = (1 << 20),
+	MATERIAL_VAR_TRANSLUCENT = (1 << 21),
+	MATERIAL_VAR_NORMALMAPALPHAENVMAPMASK = (1 << 22),
+	MATERIAL_VAR_NEEDS_SOFTWARE_SKINNING = (1 << 23),
+	MATERIAL_VAR_OPAQUETEXTURE = (1 << 24),
+	MATERIAL_VAR_ENVMAPMODE = (1 << 25),
+	MATERIAL_VAR_SUPPRESS_DECALS = (1 << 26),
+	MATERIAL_VAR_HALFLAMBERT = (1 << 27),
+	MATERIAL_VAR_WIREFRAME = (1 << 28),
+	MATERIAL_VAR_ALLOWALPHATOCOVERAGE = (1 << 29),
+	MATERIAL_VAR_IGNORE_ALPHA_MODULATION = (1 << 30)
+};
+
+enum {
+	TEXTUREFLAGS_POINTSAMPLE = 0x00000001,
+	TEXTUREFLAGS_TRILINEAR = 0x00000002,
+	TEXTUREFLAGS_CLAMPS = 0x00000004,
+	TEXTUREFLAGS_CLAMPT = 0x00000008,
+	TEXTUREFLAGS_ANISOTROPIC = 0x00000010,
+	TEXTUREFLAGS_HINT_DXT5 = 0x00000020,
+	TEXTUREFLAGS_SRGB = 0x00000040,
+	TEXTUREFLAGS_NORMAL = 0x00000080,
+	TEXTUREFLAGS_NOMIP = 0x00000100,
+	TEXTUREFLAGS_NOLOD = 0x00000200,
+	TEXTUREFLAGS_ALL_MIPS = 0x00000400,
+	TEXTUREFLAGS_PROCEDURAL = 0x00000800,
+	TEXTUREFLAGS_ONEBITALPHA = 0x00001000,
+	TEXTUREFLAGS_EIGHTBITALPHA = 0x00002000,
+	TEXTUREFLAGS_ENVMAP = 0x00004000,
+	TEXTUREFLAGS_RENDERTARGET = 0x00008000,
+	TEXTUREFLAGS_DEPTHRENDERTARGET = 0x00010000,
+	TEXTUREFLAGS_NODEBUGOVERRIDE = 0x00020000,
+	TEXTUREFLAGS_SINGLECOPY = 0x00040000,
+	TEXTUREFLAGS_STAGING_MEMORY = 0x00080000,
+	TEXTUREFLAGS_IMMEDIATE_CLEANUP = 0x00100000,
+	TEXTUREFLAGS_IGNORE_PICMIP = 0x00200000,
+	TEXTUREFLAGS_UNUSED_00400000 = 0x00400000,
+	TEXTUREFLAGS_NODEPTHBUFFER = 0x00800000,
+	TEXTUREFLAGS_UNUSED_01000000 = 0x01000000,
+	TEXTUREFLAGS_CLAMPU = 0x02000000,
+	TEXTUREFLAGS_VERTEXTEXTURE = 0x04000000,
+	TEXTUREFLAGS_SSBUMP = 0x08000000,
+	TEXTUREFLAGS_UNUSED_10000000 = 0x10000000,
+	TEXTUREFLAGS_BORDER = 0x20000000,
+	TEXTUREFLAGS_UNUSED_40000000 = 0x40000000,
+	TEXTUREFLAGS_UNUSED_80000000 = 0x80000000,
+};
+
+enum {
+	MATERIAL_ADAPTER_NAME_LENGTH = 512,
+};
+
+struct material_adapter_info_t {
+	char m_driver_name[MATERIAL_ADAPTER_NAME_LENGTH];
+	unsigned int m_vendor_id;
+	unsigned int m_device_id;
+	unsigned int m_sub_sys_id;
+	unsigned int m_revision;
+	int m_dx_support_level;
+	int m_dx_support_level_max;
+	unsigned int m_driver_version_high;
+	unsigned int m_driver_version_low;
+};
+
+class c_material {
+public:
+	/*
+	* IMaterial::GetTextureGroupName()
+	*
+	*/
+	const char* get_texture_group_name() {
+		return mem::call_virtual_fn<const char*, 1>(this);
+	}
+};
+
+class c_material_system {
+public:
+	/*
+	* IMaterialSystem::FindMaterial(string, string, bool, string)
+	*
+	*/
+	c_material* find_material(char const* material_name, const char* group_name, bool complain, const char* complain_prefix);
+
+	/*
+	* IMaterialSystem::FirstMaterial()
+	*
+	*/
+	material_handle_t first_material();
+
+	/*
+	* IMaterialSystem::NextMaterial()
+	*
+	*/
+	material_handle_t next_material(material_handle_t handle);
+
+	/*
+	* IMaterialSystem::InvalidMaterial()
+	*
+	*/
+	material_handle_t invalid_material();
+
+	/*
+	* IMaterialSystem::GetMaterial(unsigned short)
+	*
+	*/
+	c_material* get_material(material_handle_t handle);
+};

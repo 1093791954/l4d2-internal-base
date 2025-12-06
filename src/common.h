@@ -1,0 +1,4 @@
+#pragma once
+
+#define LEFT4DEAD2_GAME_CLASS_NAME "Valve001"
+#define TIMEOUT_FOR_WAIT_MODULES    50000
