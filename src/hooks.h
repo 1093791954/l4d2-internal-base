@@ -30,10 +30,27 @@ struct hook_t {
 		m_target = target;
 		m_orig = orig;
 
-		MH_STATUS status{};
-		
-		status = MH_CreateHook(m_src, m_target, m_orig);
+		MH_STATUS status = MH_CreateHook(m_src, m_target, m_orig);
+
+		if (status != MH_OK) {
+#ifdef _DEBUG
+			printf("Failed to create %s hook\n", get_hook_name_by_index(m_index));
+#endif
+			return;
+		}
+
 		status = MH_EnableHook(m_src);
+
+		if (status != MH_OK) {
+#ifdef _DEBUG
+			printf("Failed to enable %s hook\n", get_hook_name_by_index(m_index));
+#endif
+			return;
+		}
+
+#ifdef _DEBUG
+		printf("[MinHook] %s hooked (%d index)\n", get_hook_name_by_index(m_index), m_index);
+#endif
 
 		m_hooked = true;
 	}
@@ -50,12 +67,42 @@ struct hook_t {
 		if (!m_hooked)
 			return;
 
-		MH_STATUS status{};
+		MH_STATUS status = MH_DisableHook(m_src);
 
-		status = MH_DisableHook(m_src);
+		if (status != MH_OK) {
+#ifdef _DEBUG
+			printf("Failed to disable %s hook\n", get_hook_name_by_index(m_index));
+#endif
+			return;
+		}
+
 		status = MH_RemoveHook(m_src);
 
+		if (status != MH_OK) {
+#ifdef _DEBUG
+			printf("Failed to remove %s hook\n", get_hook_name_by_index(m_index));
+#endif
+			return;
+		}
+
 		m_hooked = false;
+	}
+
+	const char* get_hook_name_by_index(int index) {
+		switch (index) {
+		case CREATE_MOVE_FN_INDEX:
+			return "Create move";
+		case PAINT_TRAVERSE_FN_INDEX:
+			return "Paint traverse";
+		case PRESENT_FN_INDEX:
+			return "Present";
+		case RESET_FN_INDEX:
+			return "Reset";
+		case GET_SCREEN_ASPECT_RATIO_FN_INDEX:
+			return "Get aspect ratio";
+		case IS_GAME_PAUSED_FN_INDEX:
+			return "Is game paused";
+		}
 	}
 
 private:
@@ -72,7 +119,7 @@ struct hooks {
 	void shutdown();
 
 private:
-	hook_t m_hooks[16]{};
+	hook_t m_hooks[maxHooks]{};
 };
 
 inline hooks g_hooks{};
