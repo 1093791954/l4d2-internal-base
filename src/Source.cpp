@@ -5,8 +5,12 @@
 #include "font_loader.h"
 #include "signatures.h"
 #include "events.h"
+#ifdef _DEBUG
+#include "console.h"
+#endif
 
 #include <left4dead2_icons.h>
+
 
 enum _loaded_fonts {
 	LF_LEFT4DEAD2_ICONS,
@@ -33,10 +37,10 @@ bool __stdcall DllMain(const HMODULE instance, const int32_t reason, void*)
 			if (util::wait_for_mod(serverBrowserDLL) == WFM_TIMEOUT)
 				goto _Exit;
 
-			AllocConsole();
-
-			freopen_s(reinterpret_cast<FILE**>(stdin), "CONIN$", "r", stdin);
-			freopen_s(reinterpret_cast<FILE**>(stdout), "CONOUT$", "w", stdout);
+#ifdef _DEBUG
+			// init console for debugging
+			g_console.initialise();
+#endif
 
 			// init font loader with pointer to font list
 			g_font_loader.initialise(loaded_fonts);
@@ -72,9 +76,10 @@ bool __stdcall DllMain(const HMODULE instance, const int32_t reason, void*)
 				g_ui.toggle();
 			});
 
+#ifdef _DEBUG
 			// initialization time
 			printf("game hacked in %dms\n", static_cast<int>(util::get_elapsed_time(start_time)));
-
+#endif
 			auto last_minute{ 0 };
 			while (!g::done) {
 				std::this_thread::sleep_for(std::chrono::milliseconds(1000));
@@ -121,6 +126,11 @@ bool __stdcall DllMain(const HMODULE instance, const int32_t reason, void*)
 
 		// free loaded font list
 		g_font_loader.shutdown(loaded_fonts);
+
+#ifdef _DEBUG
+		// uninit console
+		g_console.shutdown();
+#endif
 	});
 
 	return true;

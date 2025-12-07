@@ -311,6 +311,9 @@
     <ClInclude Include="..\src\debug_overlay.h">
       <Filter>sdk\engine</Filter>
     </ClInclude>
+    <ClInclude Include="..\src\console.h">
+      <Filter>util</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\3rdparty\minhook\src\buffer.c">
@@ -445,6 +448,9 @@
     </ClCompile>
     <ClCompile Include="..\src\model_render.cpp">
       <Filter>sdk\models</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\console.cpp">
+      <Filter>util</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

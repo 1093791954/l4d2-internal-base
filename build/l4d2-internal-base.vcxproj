@@ -127,6 +127,7 @@
     <ClInclude Include="..\src\color.h" />
     <ClInclude Include="..\src\common.h" />
     <ClInclude Include="..\src\config.h" />
+    <ClInclude Include="..\src\console.h" />
     <ClInclude Include="..\src\debug_overlay.h" />
     <ClInclude Include="..\src\engine_client.h" />
     <ClInclude Include="..\src\engine_vgui.h" />
@@ -189,6 +190,7 @@
     <ClCompile Include="..\src\base_player.cpp" />
     <ClCompile Include="..\src\checksum_crc.cpp" />
     <ClCompile Include="..\src\checksum_md5.cpp" />
+    <ClCompile Include="..\src\console.cpp" />
     <ClCompile Include="..\src\engine_client.cpp" />
     <ClCompile Include="..\src\fonts.cpp" />
     <ClCompile Include="..\src\font_loader.cpp" />
