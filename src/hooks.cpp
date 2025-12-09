@@ -5,20 +5,7 @@
 #include "math.h"
 #include "signatures.h"
 
-using present_fn = long(D3DAPI*)(IDirect3DDevice9*, RECT*, RECT*, HWND, RGNDATA*);
-using reset_fn = long(D3DAPI*)(IDirect3DDevice9*, D3DPRESENT_PARAMETERS*);
-using create_move_fn = bool(__stdcall*)(float, user_cmd_t*);
-using paint_traverse_fn = void(__thiscall*)(c_vgui_panel*, std::uint32_t, bool, bool);
-using get_screen_aspect_ratio_fn = float(__thiscall*)(c_engine_client*, int, int);
-using is_game_paused_fn = bool(__thiscall*)(c_engine_client*);
-
-static present_fn o_present{};
-static reset_fn o_reset{};
-static create_move_fn o_create_move{};
-static paint_traverse_fn o_paint_traverse{};
-static get_screen_aspect_ratio_fn o_get_screen_aspect_ratio{};
-static is_game_paused_fn o_is_game_paused{};
-
+static long(D3DAPI *o_present)(IDirect3DDevice9*, RECT*, RECT*, HWND, RGNDATA*);
 static std::once_flag init_present_stuff{};
 static long D3DAPI present_h(IDirect3DDevice9* device, RECT* source_rect, RECT* dest_rect, HWND dest_window_override, RGNDATA* dirty_region)
 {
@@ -47,6 +34,7 @@ static long D3DAPI present_h(IDirect3DDevice9* device, RECT* source_rect, RECT* 
 	return o_present(device, source_rect, dest_rect, dest_window_override, dirty_region);
 }
 
+static long(D3DAPI *o_reset)(IDirect3DDevice9*, D3DPRESENT_PARAMETERS*);
 static long D3DAPI reset_h(IDirect3DDevice9* device, D3DPRESENT_PARAMETERS* present_parameters)
 {
 	if ((g::initialised && !g::done))
@@ -73,6 +61,7 @@ static long D3DAPI reset_h(IDirect3DDevice9* device, D3DPRESENT_PARAMETERS* pres
 	return ret;
 }
 
+static bool(__stdcall *o_create_move)(float, user_cmd_t*);
 static bool __stdcall create_move_h(float input_sample_frametime, user_cmd_t* cmd)
 {
 	/* check if cmd is corrected */
@@ -161,6 +150,7 @@ static bool __stdcall create_move_h(float input_sample_frametime, user_cmd_t* cm
 	}
 }
 
+static void(__thiscall *o_paint_traverse)(c_vgui_panel*, std::uint32_t, bool, bool);
 static void __stdcall paint_traverse_h(std::uint32_t panel, bool force_repaint, bool allow_force)
 {
 	o_paint_traverse(g_l4d2.m_panel, panel, force_repaint, allow_force);
@@ -185,11 +175,13 @@ static void __stdcall paint_traverse_h(std::uint32_t panel, bool force_repaint, 
 	}
 }
 
+static float(__thiscall *o_get_screen_aspect_ratio)(c_engine_client*, int, int);
 static float __stdcall get_screen_aspect_ratio_h(int width, int height)
 {
 	return o_get_screen_aspect_ratio(g_l4d2.m_engine, width, height);
 }
 
+static bool(__thiscall *o_is_game_paused)(c_engine_client*);
 static bool __stdcall is_game_paused_h()
 {
 	return o_is_game_paused(g_l4d2.m_engine);
