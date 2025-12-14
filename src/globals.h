@@ -19,7 +19,8 @@ namespace g
 	inline bool initialised{},
 		               done{};
 
-	inline int minutes_in_game{},
+	inline int hours_in_game{},
+		       minutes_in_game{},
 		       seconds_in_game{};
 
 	inline int screen_width{};

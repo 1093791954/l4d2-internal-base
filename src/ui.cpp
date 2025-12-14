@@ -208,7 +208,19 @@ void ui::draw_watermark()
 		ss << " | " << util::get_current_time();
 
 	if (v[1])
-		ss << " | " << std::to_string(g::minutes_in_game) << "m " << std::to_string(g::seconds_in_game) << "s Playing";
+	{
+		if (g::hours_in_game > 0)
+		{
+			if (g::hours_in_game >= 24)
+				ss << " | " + std::to_string(g::hours_in_game) + "h Playing";
+
+			else
+				ss << " | " + std::to_string(g::hours_in_game) + "h " + std::to_string(g::minutes_in_game) + "m Playing";
+		}
+		else {
+			ss << " | " + std::to_string(g::minutes_in_game) + "m " + std::to_string(g::seconds_in_game) + "s Playing";
+		}
+	}
 
 	if (v[2])
 		ss << " | " << std::to_string(static_cast<int>(1.f / g_l4d2.m_player_info_mgr->get_globals()->absolute_frame_time)) << " fps";

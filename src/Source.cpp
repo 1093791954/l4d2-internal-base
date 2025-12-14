@@ -11,7 +11,6 @@
 
 #include <left4dead2_icons.h>
 
-
 enum _loaded_fonts {
 	LF_LEFT4DEAD2_ICONS,
 };
@@ -81,10 +80,23 @@ bool __stdcall DllMain(const HMODULE instance, const int32_t reason, void*)
 			printf("game hacked in %dms\n", static_cast<int>(util::get_elapsed_time(start_time)));
 #endif
 			auto last_minute{ 0 };
+			auto last_hour{ 0 };
 			while (!g::done) {
 				std::this_thread::sleep_for(std::chrono::milliseconds(1000));
 
 				int total_minutes = util::get_elapsed_time(start_time) / 60000;
+				int total_hours = total_minutes / 60;
+
+				if (total_hours != last_hour) {
+					last_hour = total_hours;
+					
+					g::hours_in_game = 0;
+					g::minutes_in_game = 0;
+					g::seconds_in_game = 0;
+
+					last_minute = 0;
+				}
+
 				if (total_minutes != last_minute) {
 					last_minute = total_minutes;
 					g::seconds_in_game = 0;
@@ -93,7 +105,8 @@ bool __stdcall DllMain(const HMODULE instance, const int32_t reason, void*)
 					g::seconds_in_game = (util::get_elapsed_time(start_time) % 60000) / 1000;
 				}
 
-				g::minutes_in_game = total_minutes;
+				g::minutes_in_game = total_minutes % 60;
+				g::hours_in_game = total_hours;
 			}
 
 		_Exit:
