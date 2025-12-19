@@ -26,6 +26,7 @@ void game_event_manager::initialise()
 
 	/* Player hurt */
 	g_l4d2.m_game_event_manager->add_listener(this, "player_hurt");
+	g_l4d2.m_game_event_manager->add_listener(this, "player_hurt_concise");
 
 	// local(1) - Not networked
 	// userid(short) - user ID who was hurt
@@ -60,6 +61,11 @@ void game_event_manager::initialise()
 
 	// userid(short) -
 	// text(string) -
+
+	/* Player afk */
+	g_l4d2.m_game_event_manager->add_listener(this, "player_afk");
+
+	// player(short) - user ID of the player
 
 	/* Player who fired the teammate */
 	g_l4d2.m_game_event_manager->add_listener(this, "friendly_fire");
@@ -102,16 +108,93 @@ void game_event_manager::initialise()
 	// amount(short) - how much damage was done
 	// type(long) - damage type
 
-	/* Boss killed (not all) */
+	/* Tank killed */
 	g_l4d2.m_game_event_manager->add_listener(this, "tank_killed");
+
+	// userid(short) - user ID of dead tank
+	// attacker(short) - user id of killer
+	// solo(bool) - TRUE if a player single - handedly killed the Tank
+	// melee_only(bool) - TRUE if the tank was only killed by melee attacks(no blast, burn, or bullet damage)
+	// l4d1_only(bool) - TRUE if l4d1 survivors inflicted damage and the l4d2 survivors did not)
+
+	/* Witch killed */
 	g_l4d2.m_game_event_manager->add_listener(this, "witch_killed");
+
+	// userid(short) - Player who killed the witch
+	// witchid(long) - Entindex of witch that was killed
+	// oneshot(bool) - TRUE if the Witch was killed with one shot
+	// melee_only(bool) - TRUE if the witch was only killed by melee attacks(no blast, burn, or bullet damage)
+	// bride(bool) - bride variant?
+
+	/* Jockey killed */
 	g_l4d2.m_game_event_manager->add_listener(this, "jockey_killed");
+
+	// userid(short) - user ID of dead jockey
+	// attacker(short) - user id of killer
+	// weapon(string) - weapon name
+
+	/* Spitter killed */
 	g_l4d2.m_game_event_manager->add_listener(this, "spitter_killed");
+
+	// userid(short) - user ID of dead spitter
+	// attacker(short) - user id of killer
+	// has_spit(bool) - TRUE if the spitter spit at some point
+
+	/* Charger killed */
 	g_l4d2.m_game_event_manager->add_listener(this, "charger_killed");
 
-	/* Boss spawn (not all) */
+	// userid(short) - user ID of dead charger
+	// attacker(short) - user id of killer
+	// melee(bool) - TRUE if a player killed the charger with a melee weapon
+	// charging(bool) - TRUE if the charger was charging when it died
+
+	/* Tank spawn */
 	g_l4d2.m_game_event_manager->add_listener(this, "tank_spawn");
+
+	// userid(short) - User ID of the tank spawning now
+	// tankid(short) - Entindex of tank spawning right now
+
+	/* Witch spawn */
 	g_l4d2.m_game_event_manager->add_listener(this, "witch_spawn");
+
+	// witchid(long) - Entindex of witch spawning right now
+
+	/* Hunter headshot */
+	g_l4d2.m_game_event_manager->add_listener(this, "hunter_headshot");
+
+	// userid(short) - player who made the headshot
+	// hunteruserid(long) - user ID of Hunter
+	// slunging(bool) - TRUE if the Hunter was in the act of lunging
+
+	/* Jockey headshot */
+	g_l4d2.m_game_event_manager->add_listener(this, "jockey_headshot");
+
+	// userid(short) - user ID of player that landed a headshot on the Jockey
+	// jockeyuserid(long) - user ID of Jockey
+	// slunging(bool) - TRUE if the Jockey was in the act of lunging
+
+	/* Player who used the pills */
+	g_l4d2.m_game_event_manager->add_listener(this, "pills_used");
+
+	// userid(short) - person who had the pills
+	// subject(short) - person swallowing the pills
+
+	/* Player who tried to use the pills */
+	g_l4d2.m_game_event_manager->add_listener(this, "pills_used_fail");
+
+	// userid(short) - person who tried to use the pills
+
+	/* Player who used the defibrillator */
+	g_l4d2.m_game_event_manager->add_listener(this, "defibrillator_used");
+
+	// userid(short) - person who used the defibrillator
+	// subject(short) - person it helped
+
+	/* Player who tried to use the defibrillator */
+	g_l4d2.m_game_event_manager->add_listener(this, "defibrillator_used_fail");
+
+	// userid(short) - person who tried to use the defibrillator
+	// subject(short) - person it failed to help
 }
 
 void game_event_manager::fire_game_event(c_game_event* _event)

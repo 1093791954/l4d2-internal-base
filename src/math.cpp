@@ -27,22 +27,20 @@ static bool screen_transform(const vec3& in, vec3& out)
 	return true;
 }
 
-bool math::w2s(const vec3& in, vec3& out)
+bool math::w2s(const vec3& world, vec3& screen)
 {
-	if (!screen_transform(in, out))
+	if (!screen_transform(world, screen))
 		return false;
 
-	out.x = (g::screen_width / 2.0f) + (out.x * g::screen_width) / 2.0f;
-	out.y = (g::screen_height / 2.0f) - (out.y * g::screen_height) / 2.0f;
+	screen.x = (g::screen_width / 2.0f) + (screen.x * g::screen_width) / 2.0f;
+	screen.y = (g::screen_height / 2.0f) - (screen.y * g::screen_height) / 2.0f;
 
 	return true;
 }
 
 bool math::get_player_bbox(c_base_player* player, box& in)
 {
-	vec3 top, down, s[2]{};
-
-	down = player->get_origin();
+	vec3 top, down = player->get_origin(), s[2]{};
 	top = down + vec3(0, 0, 72);
 
 	if (!w2s(top, s[1]) || !w2s(down, s[0]))

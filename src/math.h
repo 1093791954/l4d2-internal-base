@@ -26,7 +26,12 @@ namespace math
 		return static_cast<float>(x) * (180.f / M_PI_F);
 	}
 
-	bool w2s(const vec3& in, vec3& out);
+	// World to screen
+	bool w2s(const vec3& world, vec3& screen);
+	
+	// Calc player box
 	bool get_player_bbox(c_base_player* player, box& in);
+	
+	// Fix movement
 	void correct_movement(user_cmd_t* cmd, vec3 old_angles, float old_forwardmove, float old_sidemove);
 }
