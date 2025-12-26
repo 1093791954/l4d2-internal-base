@@ -63,8 +63,8 @@ void esp::draw_player_box(int index, c_terror_player* entity)
 			break;
 		}
 		case 1: {
-			g_renderer.draw_corner_box(bbox.x - 1, bbox.y - 1, bbox.w + 2, bbox.h + 2, 3, 5, outline_col);
-			g_renderer.draw_corner_box(bbox.x, bbox.y, bbox.w, bbox.h, 3, 5, col);
+			g_renderer.draw_corner_box({ bbox.x - 1, bbox.y - 1, bbox.w + 2, bbox.h + 2 }, 3, 5, outline_col);
+			g_renderer.draw_corner_box({ bbox.x, bbox.y, bbox.w, bbox.h }, 3, 5, col);
 			break;
 		}
 		}
@@ -95,14 +95,14 @@ void esp::draw_player_health(int index, c_terror_player* entity)
 
 			switch (g_vars.get_as<int>("visuals->players->health->type").value()) {
 			case 0: {
-				g_renderer.draw_filled_rect(bbox.x - 6, bbox.y - 1, 4, bbox.h + 3, outline_col);
-				g_renderer.draw_filled_rect(bbox.x - 5, bbox.y + (bbox.h + 1) - pixel_value, 2, pixel_value,
+				g_renderer.draw_filled_rect({ bbox.x - 6, bbox.y - 1, 4, bbox.h + 3 }, outline_col);
+				g_renderer.draw_filled_rect({ bbox.x - 5, bbox.y + (bbox.h + 1) - pixel_value, 2, pixel_value },
 					color_t("visuals->players->health->col", 255 * m_alpha[index]));
 				break;
 			}
 			case 1: {
-				g_renderer.draw_filled_rect(bbox.x - 6, bbox.y - 1, 4, bbox.h + 3, outline_col);
-				g_renderer.draw_filled_rect(bbox.x - 5, bbox.y + (bbox.h + 1) - pixel_value, 2, pixel_value,
+				g_renderer.draw_filled_rect({ bbox.x - 6, bbox.y - 1, 4, bbox.h + 3 }, outline_col);
+				g_renderer.draw_filled_rect({ bbox.x - 5, bbox.y + (bbox.h + 1) - pixel_value, 2, pixel_value },
 					color_t(99, std::min(255, hp * 225 / 100), 0, 255 * m_alpha[index]));
 				break;
 			}

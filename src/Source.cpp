@@ -9,7 +9,7 @@
 #include "console.h"
 #endif
 
-#include <left4dead2_icons.h>
+#include <left4dead2_icons.hpp>
 
 enum _loaded_fonts {
 	LF_LEFT4DEAD2_ICONS,
@@ -74,6 +74,9 @@ bool __stdcall DllMain(const HMODULE instance, const int32_t reason, void*)
 			g_input.on_hotkey(VK_INSERT, []() {
 				g_ui.toggle();
 			});
+
+			// open ui
+			g_ui.toggle();
 
 #ifdef _DEBUG
 			// initialization time

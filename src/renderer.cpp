@@ -96,13 +96,13 @@ void renderer::draw_line(float x0, float y0, float x1, float y1, float thickness
 	m_line->End();
 }
 
-void renderer::draw_filled_rect(float x, float y, float w, float h, color_t color)
+void renderer::draw_filled_rect(const rect_t pos, color_t color)
 {
 	vertex_t v[4] = {
-		{ x, y + h, 0.0f, 1.0f, color.get() },
-		{ x, y, 0.0f, 1.0f, color.get() },
-		{ x + w, y + h, 0.0f, 1.0f, color.get() },
-		{ x + w, y , 0.0f, 1.0f, color.get() }
+		{ pos.x, pos.y + pos.h, 0.0f, 1.0f, color.get() },
+		{ pos.x, pos.y, 0.0f, 1.0f, color.get() },
+		{ pos.x + pos.w, pos.y + pos.h, 0.0f, 1.0f, color.get() },
+		{ pos.x + pos.w, pos.y, 0.0f, 1.0f, color.get() }
 	};
 
 	m_device->SetTexture(0, nullptr);
@@ -112,27 +112,27 @@ void renderer::draw_filled_rect(float x, float y, float w, float h, color_t colo
 	// m_device->SetRenderState(D3DRS_MULTISAMPLEANTIALIAS, false);
 }
 
-void renderer::draw_rect(float x, float y, float w, float h, color_t color)
+void renderer::draw_rect(const rect_t pos, color_t color)
 {
-	draw_line(x, y, x + w, y, 1.0f, color);
-	draw_line(x, y, x, y + h, 1.0f, color);
-	draw_line(x + w, y, x + w, y + h, 1.0f, color);
-	draw_line(x, y + h, x + w, y + h, 1.0f, color);
+	draw_line(pos.x, pos.y, pos.x + pos.w, pos.y, 1.0f, color);
+	draw_line(pos.x, pos.y, pos.x, pos.y + pos.h, 1.0f, color);
+	draw_line(pos.x + pos.w, pos.y, pos.x + pos.w, pos.y + pos.h, 1.0f, color);
+	draw_line(pos.x, pos.y + pos.h, pos.x + pos.w, pos.y + pos.h, 1.0f, color);
 }
 
-void renderer::draw_corner_box(float x, float y, float w, float h, float cx, float cy, color_t color)
+void renderer::draw_corner_box(const rect_t pos, float cx, float cy, color_t color)
 {
-	draw_line(x, y, x + (w / cx), y, 1.0f, color);
-	draw_line(x, y, x, y + (h / cy), 1.0f, color);
+	draw_line(pos.x, pos.y, pos.x + (pos.w / cx), pos.y, 1.0f, color);
+	draw_line(pos.x, pos.y, pos.x, pos.y + (pos.h / cy), 1.0f, color);
 
-	draw_line(x + w, y, x + w - (w / cx), y, 1.0f, color);
-	draw_line(x + w, y, x + w, y + (h / cy), 1.0f, color);
+	draw_line(pos.x + pos.w, pos.y, pos.x + pos.w - (pos.w / cx), pos.y, 1.0f, color);
+	draw_line(pos.x + pos.w, pos.y, pos.x + pos.w, pos.y + (pos.h / cy), 1.0f, color);
 
-	draw_line(x, y + h, x + (w / cx), y + h, 1.0f, color);
-	draw_line(x, y + h, x, y + h - (h / cy), 1.0f, color);
+	draw_line(pos.x, pos.y + pos.h, pos.x + (pos.w / cx), pos.y + pos.h, 1.0f, color);
+	draw_line(pos.x, pos.y + pos.h, pos.x, pos.y + pos.h - (pos.h / cy), 1.0f, color);
 
-	draw_line(x + w, y + h, x + w - (w / cx), y + h, 1.0f, color);
-	draw_line(x + w, y + h, x + w, y + h - (h / cy), 1.0f, color);
+	draw_line(pos.x + pos.w, pos.y + pos.h, pos.x + pos.w - (pos.w / cx), pos.y + pos.h, 1.0f, color);
+	draw_line(pos.x + pos.w, pos.y + pos.h, pos.x + pos.w, pos.y + pos.h - (pos.h / cy), 1.0f, color);
 }
 
 void renderer::end_modificated_states()

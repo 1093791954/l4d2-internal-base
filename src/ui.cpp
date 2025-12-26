@@ -4,6 +4,10 @@
 #include "sdk.h"
 
 #include <sstream>
+#include <ui_fonts.hpp>
+#include <ui_sprites.hpp>
+
+PDIRECT3DTEXTURE9 g_L4D2Logo = nullptr;
 
 void ui::initialise(IDirect3DDevice9* device)
 {
@@ -12,11 +16,39 @@ void ui::initialise(IDirect3DDevice9* device)
 
 	ImGui::StyleColorsDark();
 
+	ImGui::GetStyle().WindowMinSize = ImVec2(20.0f, 20.0f);
+
 	ImGui::GetIO().IniFilename = {};
 	ImGui::GetIO().LogFilename = {};
 	ImGui::GetIO().ConfigFlags |= ImGuiConfigFlags_NoMouseCursorChange;
 
-	ImGui::GetStyle().WindowMinSize = ImVec2(20, 20);
+	ImFontConfig font_cfg{};
+
+	font_cfg.FontDataOwnedByAtlas = false;
+
+	ImGui::GetIO().Fonts->AddFontFromMemoryTTF(droidsans_ttf, sizeof(droidsans_ttf), 14.0f, &font_cfg);
+
+	/* Droid Sans 12px */
+	ImGui::fonts::small_font = ImGui::GetIO().Fonts->AddFontFromMemoryTTF(droidsans_ttf, sizeof(droidsans_ttf), 12.0f, &font_cfg);
+	
+	/* Droid Sans 22px */
+	ImGui::fonts::high_font = ImGui::GetIO().Fonts->AddFontFromMemoryTTF(droidsans_ttf, sizeof(droidsans_ttf), 22.0f, &font_cfg);
+	
+	/* Tab Icons 14px */
+	ImGui::fonts::small_icon_font = ImGui::GetIO().Fonts->AddFontFromMemoryTTF(icons_ttf, sizeof(icons_ttf), 14.0f, &font_cfg);
+	
+	/* Tab Icons 16px */
+	ImGui::fonts::icon_font = ImGui::GetIO().Fonts->AddFontFromMemoryTTF(icons_ttf, sizeof(icons_ttf), 16.0f, &font_cfg);
+
+	/* L4D2 icon for watermark */
+	D3DXCreateTextureFromFileInMemoryEx(device, &l4d2_icon, sizeof(l4d2_icon), 30, 30,
+		D3DUSAGE_DYNAMIC,
+		0,
+		D3DFMT_A8B8G8R8, D3DPOOL_DEFAULT,
+		D3DX_DEFAULT, D3DX_DEFAULT,
+		0, NULL, NULL,
+		&g_L4D2Logo
+	);
 
 	ImGui_ImplDX9_Init(device);
 }
@@ -38,42 +70,14 @@ void ui::render()
 
 	ImGui::NewFrame();
 	{
-		ImGui::PushStyleColor(ImGuiCol_WindowBg, ImVec4(0.1f, 0.1f, 0.1f, 1.0f));
-		ImGui::PushStyleColor(ImGuiCol_PopupBg, ImVec4(0.09f, 0.09f, 0.09f, 1.0f));
-		ImGui::PushStyleColor(ImGuiCol_FrameBg, ImVec4(0.15f, 0.15f, 0.15f, 1.00f));
-		ImGui::PushStyleColor(ImGuiCol_FrameBgHovered, ImVec4(0.15f, 0.15f, 0.15f, 1.00f));
-		ImGui::PushStyleColor(ImGuiCol_FrameBgActive, ImVec4(0.15f, 0.15f, 0.15f, 1.00f));
-		ImGui::PushStyleColor(ImGuiCol_Button, ImVec4(0.15f, 0.15f, 0.15f, 1.00f));
-		ImGui::PushStyleColor(ImGuiCol_ButtonHovered, ImVec4(0.18f, 0.18f, 0.18f, 1.00f));
-		ImGui::PushStyleColor(ImGuiCol_ButtonActive, ImVec4(0.20f, 0.20f, 0.20f, 1.00f));
-		ImGui::PushStyleColor(ImGuiCol_Header, ImVec4(0.15f, 0.15f, 0.15f, 1.00f));
-		ImGui::PushStyleColor(ImGuiCol_HeaderHovered, ImVec4(0.15f, 0.15f, 0.15f, 1.00f));
-		ImGui::PushStyleColor(ImGuiCol_HeaderActive, ImVec4(0.15f, 0.15f, 0.15f, 1.00f));
-		ImGui::PushStyleColor(ImGuiCol_Tab, ImVec4(0.15f, 0.15f, 0.15f, 1.00f));
-		ImGui::PushStyleColor(ImGuiCol_TabHovered, ImVec4(0.18f, 0.18f, 0.18f, 1.00f));
-		ImGui::PushStyleColor(ImGuiCol_TabActive, ImVec4(0.20f, 0.20f, 0.20f, 1.00f));
-		ImGui::PushStyleColor(ImGuiCol_CheckMark, ImVec4(1.0f, 1.0f, 1.0f, 0.67f));
-		ImGui::PushStyleColor(ImGuiCol_TitleBg, ImVec4(0.16f, 0.29f, 0.48f, 1.00f));
-		ImGui::PushStyleColor(ImGuiCol_TitleBgActive, ImVec4(0.16f, 0.29f, 0.48f, 1.00f));
-		ImGui::PushStyleColor(ImGuiCol_SliderGrab, ImVec4(0.35f, 0.35f, 0.35f, 1.00f));
-		ImGui::PushStyleColor(ImGuiCol_SliderGrabActive, ImVec4(0.41f, 0.41f, 0.41f, 1.00f));
-		ImGui::PushStyleColor(ImGuiCol_TextSelectedBg, ImVec4(0.26f, 0.25f, 0.25f, 1.00f));
-
-		ImGui::PushStyleVar(ImGuiStyleVar_WindowBorderSize, 0.0f);
-		ImGui::PushStyleVar(ImGuiStyleVar_PopupBorderSize, 0.0f);
-		ImGui::PushStyleVar(ImGuiStyleVar_WindowRounding, 4.0f);
-		ImGui::PushStyleVar(ImGuiStyleVar_TabRounding, 0.0f);
-		ImGui::PushStyleVar(ImGuiStyleVar_ItemSpacing, ImVec2(6, 4));
-		ImGui::PushStyleVar(ImGuiStyleVar_ScrollbarRounding, 0.0f);
-		ImGui::PushStyleVar(ImGuiStyleVar_ScrollbarSize, 0.0f);
+		ImGui::PushStyleColor(ImGuiCol_WindowBg, ImVec4(0.06f, 0.06f, 0.06f, 1.00f));
 
 		if (m_opened)
-			draw_main_window();
+			draw_main_frame();
 
 		draw_watermark();
 
-		ImGui::PopStyleVar(7);
-		ImGui::PopStyleColor(20);
+		ImGui::PopStyleColor();
 	}
 	ImGui::EndFrame();
 
@@ -81,129 +85,132 @@ void ui::render()
 	ImGui_ImplDX9_RenderDrawData(ImGui::GetDrawData());
 }
 
-void ui::draw_main_window()
+void ui::draw_main_frame()
 {
-	static char cfg_name[8] = "legit";
+	ImGui::PushStyleVar(ImGuiStyleVar_ScrollbarSize, 1.0f);
+	ImGui::PushStyleVar(ImGuiStyleVar_WindowPadding, ImVec2(0.0f, 0.0f));
+	ImGui::PushStyleVar(ImGuiStyleVar_WindowBorderSize, 0.0f);
+	ImGui::PushStyleVar(ImGuiStyleVar_FrameBorderSize, 0.0f);
+	ImGui::PushStyleVar(ImGuiStyleVar_PopupBorderSize, 0.0f);
 
-	ImGui::SetNextWindowSize(ImVec2(400, 155));
-	ImGui::Begin("##", &m_opened,
-		ImGuiWindowFlags_NoResize |
-		ImGuiWindowFlags_NoCollapse |
-		ImGuiWindowFlags_NoTitleBar);
+	ImGui::PushStyleColor(ImGuiCol_Text, ImVec4(1.00f, 1.00f, 1.00f, 1.00f));
+	ImGui::PushStyleColor(ImGuiCol_TextDisabled, ImVec4(1.00f, 1.00f, 1.00f, 0.78f));
+	ImGui::PushStyleColor(ImGuiCol_ChildBg, ImVec4(0.06f, 0.06f, 0.06f, 1.00f));
+	ImGui::PushStyleColor(ImGuiCol_PopupBg, ImVec4(0.06f, 0.06f, 0.06f, 1.00f));
+	ImGui::PushStyleColor(ImGuiCol_FrameBg, ImVec4(0.15f, 0.15f, 0.15f, 1.00f));
+	ImGui::PushStyleColor(ImGuiCol_FrameBgHovered, ImVec4(0.15f, 0.15f, 0.15f, 1.00f));
+	ImGui::PushStyleColor(ImGuiCol_FrameBgActive, ImVec4(0.15f, 0.15f, 0.15f, 1.00f));
+	ImGui::PushStyleColor(ImGuiCol_Header, ImVec4(0.15f, 0.15f, 0.15f, 1.00f));
+	ImGui::PushStyleColor(ImGuiCol_HeaderHovered, ImVec4(0.15f, 0.15f, 0.15f, 1.00f));
+	ImGui::PushStyleColor(ImGuiCol_HeaderActive, ImVec4(0.15f, 0.15f, 0.15f, 1.00f));
+	ImGui::PushStyleColor(ImGuiCol_TextSelectedBg, ImVec4(0.26f, 0.25f, 0.25f, 1.00f));
+
+	if (ImGui::InitFrame("##MainFrame", ImVec2(525.0f, 420.0f)))
 	{
-		ImGui::SetTabIndex("visuals", &m_selected_tab, 0);
-		ImGui::SetTabIndex("misc", &m_selected_tab, 1);
+		auto esp_content = []() {
+			ImGui::SetPreviewBar("ESP", "Display player boxes & etc");
 
-		ImGui::SetConfigPanel(cfg_name, sizeof(cfg_name));
+			ImGui::MakeChild("Box", []() {
+				ImGui::ColorEdit3("##box_color", "visuals->players->box->col");
+				ImGui::SameLine();
 
-		ImGui::TabContent(&m_selected_tab, 0, []()
-		{
-			if (ImGui::BeginTabItem("Players"))
+				ImGui::Combo("Type", "visuals->players->box->type", "Default\0Corner");
+			}, "visuals->players->box");
+
+			ImGui::MakeChild("Health", []() {
+				ImGui::ColorEdit3("##health_color", "visuals->players->health->col");
+				ImGui::SameLine();
+
+				ImGui::Combo("Type", "visuals->players->health->type", "Default\0Colored Health");
+			}, "visuals->players->health");
+		};
+
+		auto visuals_content = []() {
+			ImGui::SetPreviewBar("Visuals", "Display some entity objects");
+
+			ImGui::MakeChild("Spawn Objects", []() {
+				ImGui::ColorEdit3("##spawn_objects_col", "visuals->spawn_objects->col");
+				ImGui::SameLine();
+
+				ImGui::Combo("Type", "visuals->spawn_objects->type", "Text\0Icon");
+				ImGui::SliderFloat("Distance", "visuals->spawn_objects->distance", 300.0f, 5000.0f);
+			}, "visuals->spawn_objects");
+
+			ImGui::MakeChild("Special Infected", []() {
+				ImGui::ColorEdit3("##special_infected_col", "visuals->special_infected->col");
+			}, "visuals->special_infected");
+		};
+
+		auto misc_content = []() {
+			ImGui::SetPreviewBar("Misc", "Include various helpful game movement");
+
+			ImGui::MakeChild("Auto Pistol", "misc->autopistol");
+			ImGui::MakeChild("Bunnyhop", "misc->bhop");
+			ImGui::MakeChild("Auto Strafe", "misc->autostrafe");
+		};
+
+		auto settings_content = []() {
+			static char config_name[16] = "sample_cfg";
+
+			ImGui::SetPreviewBar("Settings", "Save configurations & Game utilities");
+
+			ImGui::PushItemWidth(381.0f);
 			{
-				ImGui::SetCursorPosX(4);
-
-				ImGui::Checkbox("box", "visuals->players->box");
-				ImGui::SameLine();
-
-				ImGui::SetCursorPosX(255);
-
-				ImGui::ColorEdit3("##box->col", "visuals->players->box->col");
-				ImGui::SameLine();
-
-				if (ImGui::Button(ImGui::IsPopupOpen("##players_box_pop") ? "-" : "+", "players_box_id"))
-					ImGui::OpenPopup("##players_box_pop");
-
-				if (ImGui::BeginPopup("##players_box_pop")) {
-					ImGui::Combo("type", "visuals->players->box->type", "Default\0Corner");
-
-					ImGui::EndPopup();
-				}
-
-				ImGui::SetCursorPosX(4);
-
-				ImGui::Checkbox("health", "visuals->players->health");
-				ImGui::SameLine();
-
-				ImGui::SetCursorPosX(255);
-
-				ImGui::ColorEdit3("##health->col", "visuals->players->health->col");
-				ImGui::SameLine();
-
-				if (ImGui::Button(ImGui::IsPopupOpen("##players_health_pop") ? "-" : "+", "players_health_id"))
-					ImGui::OpenPopup("##players_health_pop");
-
-				if (ImGui::BeginPopup("##players_health_pop")) {
-					ImGui::Combo("type", "visuals->players->health->type", "Default\0Colored Health");
-
-					ImGui::EndPopup();
-				}
-
-				ImGui::EndTabItem();
+				ImGui::SetCursorPosX(50.0f);
+				ImGui::InputText("##", config_name, IM_ARRAYSIZE(config_name));
 			}
+			ImGui::PopItemWidth();
 
-			if (ImGui::BeginTabItem("World"))
-			{
-				ImGui::SetCursorPosX(4);
+			ImGui::SameLine();
 
-				ImGui::Checkbox("spawn objects", "visuals->spawn_objects");
-				ImGui::SameLine();
+			if (ImGui::Button("Load"))
+				config::load(config_name);
 
-				ImGui::SetCursorPosX(255);
+			ImGui::SameLine();
 
-				ImGui::ColorEdit3("##spawn_objects->col", "visuals->spawn_objects->col");
-				ImGui::SameLine();
+			if (ImGui::Button("Save"))
+				config::save(config_name);
 
-				if (ImGui::Button(ImGui::IsPopupOpen("##spawn_objects_pop") ? "-" : "+", "spawn_objects_id"))
-					ImGui::OpenPopup("##spawn_objects_pop");
-
-				if (ImGui::BeginPopup("##spawn_objects_pop")) {
-					ImGui::Combo("type", "visuals->spawn_objects->type", "Text\0Icon");
-					ImGui::SliderFloat("distance", "visuals->spawn_objects->distance", 300.0f, 5000.0f);
-
-					ImGui::EndPopup();
-				}
-
-				ImGui::SetCursorPosX(4);
-
-				ImGui::Checkbox("special infected", "visuals->special_infected");
-				ImGui::SameLine();
-
-				ImGui::SetCursorPosX(255);
-				ImGui::ColorEdit3("##special_infected->col", "visuals->special_infected->col");
-
-				ImGui::EndTabItem();
-			}
-		});
-
-		ImGui::TabContent(&m_selected_tab, 1, []()
-		{
-			if (ImGui::BeginTabItem("General"))
-			{
-				ImGui::SetCursorPosX(4);
-				ImGui::Checkbox("auto pistol", "misc->autopistol");
-
-				ImGui::SetCursorPosX(4);
-				ImGui::Checkbox("bhop", "misc->bhop");
-
-				ImGui::SetCursorPosX(4);
-				ImGui::Checkbox("autostrafe", "misc->autostrafe");
-
-				ImGui::EndTabItem();
-			}
-
-			if (ImGui::TabItemButton("Unload"))
+			ImGui::SetCursorPosX(50.0f);
+			if (ImGui::Button("Unload", ImVec2(465.0f, 0.0f)))
 				g::done = true;
-		});
+		};
+
+		tab_content_t tab_list[] = {
+			{ "C", esp_content },
+			{ "B", visuals_content },
+			{ "D", misc_content },
+			{ "E", settings_content },
+		};
+
+		ImGui::SetupTabs(tab_list, sizeof(tab_list) / sizeof(tab_list[0]), &m_selected_tab);
+		ImGui::ShutdownFrame();
 	}
-	ImGui::End();
+
+	ImGui::PopStyleColor(11);
+	ImGui::PopStyleVar(5);
 }
 
 void ui::draw_watermark()
 {
-	std::ostringstream ss{};
-	ss << "l4d2-internal-base";
+	ImGui::PushStyleColor(ImGuiCol_ChildBg, ImVec4(0.13f, 0.13f, 0.13f, 0.98f));
+	ImGui::PushStyleColor(ImGuiCol_Header, ImVec4(0.15f, 0.15f, 0.15f, 1.00f));
+	ImGui::PushStyleColor(ImGuiCol_HeaderHovered, ImVec4(0.15f, 0.15f, 0.15f, 1.00f));
+	ImGui::PushStyleColor(ImGuiCol_HeaderActive, ImVec4(0.15f, 0.15f, 0.15f, 1.00f));
+	ImGui::PushStyleColor(ImGuiCol_CheckMark, ImVec4(1.0f, 1.0f, 1.0f, 0.67f));
+	ImGui::PushStyleColor(ImGuiCol_Button, ImVec4(0.15f, 0.15f, 0.15f, 1.00f));
+	ImGui::PushStyleColor(ImGuiCol_ButtonHovered, ImVec4(0.18f, 0.18f, 0.18f, 1.00f));
+	ImGui::PushStyleColor(ImGuiCol_ButtonActive, ImVec4(0.20f, 0.20f, 0.20f, 1.00f));
 
-	static bool v[3] = { false, false, false };
+	ImGui::PushStyleVar(ImGuiStyleVar_WindowBorderSize, 0.0f);
+	ImGui::PushStyleVar(ImGuiStyleVar_PopupBorderSize, 0.0f);
+	ImGui::PushStyleVar(ImGuiStyleVar_WindowRounding, 4.0f);
+	ImGui::PushStyleVar(ImGuiStyleVar_ChildRounding, 4.0f);
+	ImGui::PushStyleVar(ImGuiStyleVar_ScrollbarSize, 0.0f);
+
+	static bool v[3] = { true, false, false };
+	std::ostringstream ss{};
+	ss << "L4D2";
 
 	if (v[0])
 		ss << " | " << util::get_current_time();
@@ -226,49 +233,64 @@ void ui::draw_watermark()
 	if (v[2])
 		ss << " | " << std::to_string(static_cast<int>(1.f / g_l4d2.m_player_info_mgr->get_globals()->absolute_frame_time)) << " fps";
 
-	auto width = ImGui::CalcTextSize(ss.str().c_str()).x + 30;
 
-	ImGui::PushStyleVar(ImGuiStyleVar_WindowPadding, ImVec2(0, 0));
-
-	ImGui::SetNextWindowPos(ImVec2(5, 5), ImGuiCond_Once);
-	ImGui::SetNextWindowSize(ImVec2(m_opened ? width : width - 20, 22));
+	auto width = ImGui::CalcTextSize(ss.str().c_str()).x;
+	ImGui::SetNextWindowSize(ImVec2(m_opened ? width + 70.0f : width + 42.0f, 30.0f));
 
 	ImGuiWindowFlags flags = (ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoScrollbar |
 		                      ImGuiWindowFlags_NoCollapse | ImGuiWindowFlags_NoTitleBar |
-		                      ImGuiWindowFlags_NoMove);
+		                      ImGuiWindowFlags_NoScrollWithMouse | ImGuiWindowFlags_NoMove);
 
 	if (m_opened)
 		flags &= ~ImGuiWindowFlags_NoMove;
 
-	ImGui::Begin("##Interface", 0, flags);
+	ImGui::SetNextWindowPos(ImVec2(5.0f, 5.0f), ImGuiCond_Once);
+
+	if (ImGui::Begin("##WatermarkFrame", 0, flags))
 	{
-		ImGui::SetCursorPos(ImVec2(4, 4));
+		ImGui::SetCursorPos(ImVec2(5.0f, 5.0f));
+		ImGui::Image(g_L4D2Logo, ImVec2(20.0f, 20.0f));
+
+		ImGui::SetCursorPos(ImVec2(32.0f, 7.0f));
 		ImGui::Text(ss.str().c_str());
 
 		if (m_opened)
 		{
 			ImGui::SameLine();
 
-			ImGui::SetCursorPos(ImVec2(width - 19, 0));
-			if (ImGui::Button(ImGui::IsPopupOpen("##InterfaceUtils") ? "-" : "+", ImVec2(20, 22)))
-				ImGui::OpenPopup("##InterfaceUtils");
+			ImGui::SetCursorPos(ImVec2(width + 40.0f, 0));
+			if (ImGui::Button(ImGui::IsPopupOpen("##WatermarkUtils") ? "-" : "+", ImVec2(30.0f, 30.0f)))
+				ImGui::OpenPopup("##WatermarkUtils");
 
-			ImGui::PushStyleVar(ImGuiStyleVar_WindowPadding, ImVec2(4, 3));
+			ImGui::PushStyleVar(ImGuiStyleVar_WindowPadding, ImVec2(4.0f, 3.0f));
 
-			if (ImGui::BeginPopup("##InterfaceUtils")) {
-				ImGui::Checkbox("Current time", &v[0]);
-				ImGui::Checkbox("Time playing", &v[1]);
-				ImGui::Checkbox("Show fps", &v[2]);
+			if (ImGui::BeginPopup("##WatermarkUtils"))
+			{
+				ImGui::PushStyleColor(ImGuiCol_FrameBg, ImVec4(0.15f, 0.15f, 0.15f, 1.00f));
+				ImGui::PushStyleColor(ImGuiCol_FrameBgHovered, ImVec4(0.15f, 0.15f, 0.15f, 1.00f));
+				ImGui::PushStyleColor(ImGuiCol_FrameBgActive, ImVec4(0.15f, 0.15f, 0.15f, 1.00f));
+				ImGui::PushStyleColor(ImGuiCol_CheckMark, ImVec4(1.0f, 1.0f, 1.0f, 0.67f));
+
+				ImGui::Checkbox("Current Time", &v[0]);
+				ImGui::Checkbox("Time Playing", &v[1]);
+				ImGui::Checkbox("Show FPS", &v[2]);
+
+				ImGui::PopStyleColor();
+				ImGui::PopStyleColor();
+				ImGui::PopStyleColor();
+				ImGui::PopStyleColor();
 
 				ImGui::EndPopup();
 			}
 
 			ImGui::PopStyleVar();
 		}
-	}
-	ImGui::End();
 
-	ImGui::PopStyleVar();
+		ImGui::End();
+	}
+
+	ImGui::PopStyleVar(5);
+	ImGui::PopStyleColor(8);
 }
 
 void ui::toggle()

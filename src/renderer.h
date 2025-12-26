@@ -84,6 +84,10 @@ private:
 	size_t m_image_size{};
 };
 
+struct rect_t {
+	int x, y, w, h;
+};
+
 struct renderer {
 	bool initialise(IDirect3DDevice9* device);
 	
@@ -94,9 +98,9 @@ struct renderer {
 	void begin_modificated_states();
 
 	void draw_line(float x0, float y0, float x1, float y1, float thickness, color_t color);
-	void draw_filled_rect(float x, float y, float w, float h, color_t color);
-	void draw_rect(float x, float y, float w, float h, color_t color);
-	void draw_corner_box(float x, float y, float w, float h, float cx, float cy, color_t color);
+	void draw_filled_rect(const rect_t pos, color_t color);
+	void draw_rect(const rect_t pos, color_t color);
+	void draw_corner_box(const rect_t pos, float cx, float cy, color_t color);
 
 	// End render states
 	void end_modificated_states();

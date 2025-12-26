@@ -29,15 +29,17 @@ struct ui {
 
 private:
 	// Set up menu elements
-	void draw_main_window();
+	void draw_main_frame();
 
 	// Set up watermark elements
 	void draw_watermark();
 
 private:
 	bool m_opened{};
+
 	int m_old_mouse_pos_x{},
 		m_old_mouse_pos_y{};
+
 	int m_selected_tab{};
 };
 

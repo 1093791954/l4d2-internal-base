@@ -284,9 +284,6 @@
     <ClInclude Include="..\src\font_loader.h">
       <Filter>util\font_loader</Filter>
     </ClInclude>
-    <ClInclude Include="..\3rdparty\resources\left4dead2_icons.h">
-      <Filter>3rdparty\resources</Filter>
-    </ClInclude>
     <ClInclude Include="..\src\game_event_listener2.h">
       <Filter>sdk\engine</Filter>
     </ClInclude>
@@ -310,6 +307,15 @@
     </ClInclude>
     <ClInclude Include="..\src\console.h">
       <Filter>util</Filter>
+    </ClInclude>
+    <ClInclude Include="..\3rdparty\resources\ui_fonts.hpp">
+      <Filter>3rdparty\resources</Filter>
+    </ClInclude>
+    <ClInclude Include="..\3rdparty\resources\left4dead2_icons.hpp">
+      <Filter>3rdparty\resources</Filter>
+    </ClInclude>
+    <ClInclude Include="..\3rdparty\resources\ui_sprites.hpp">
+      <Filter>3rdparty\resources</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
