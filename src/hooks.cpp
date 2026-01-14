@@ -165,7 +165,7 @@ static void __stdcall paint_traverse_h(std::uint32_t panel, bool force_repaint, 
 	if (!focus_overlay_panel_id)
 	{
 		switch (fnv::hash(g_l4d2.m_panel->get_panel_name(panel))) {
-		case fnv::hash("FocusOverlayPanel"): {
+		case fnv::hash_const("FocusOverlayPanel"): {
 			focus_overlay_panel_id = panel;
 			break;
 		}

@@ -200,7 +200,7 @@ void game_event_manager::initialise()
 void game_event_manager::fire_game_event(c_game_event* _event)
 {
 	switch (fnv::hash(_event->get_name())) {
-	case fnv::hash("player_death"): {
+	case fnv::hash_const("player_death"): {
 
 		break;
 	}

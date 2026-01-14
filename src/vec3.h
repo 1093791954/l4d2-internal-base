@@ -6,7 +6,7 @@ class vec3 {
 public:
 	vec3(float x = 0.0f, float y = 0.0f, float z = 0.0f) : x(x), y(y), z(z) {}
 
-	inline void init(float _x, float _y, float _z) {
+	inline void init(float _x = 0.0f, float _y = 0.0f, float _z = 0.0f) {
 		x = _x;
 		y = _y;
 		z = _z;
@@ -145,6 +145,16 @@ public:
 
 class __declspec(align(16)) vec_aligned : public vec3 {
 public:
+	inline vec_aligned(void) {};
+
+	inline vec_aligned(float x, float y, float z) {
+		init(x, y, z);
+	}
+
+	explicit vec_aligned(const vec3& othr) {
+		init(othr.x, othr.y, othr.z);
+	}
+
 	vec_aligned& operator=(const vec3& oth) {
 		init(oth.x, oth.y, oth.z);
 		return *this;

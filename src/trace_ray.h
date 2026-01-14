@@ -13,15 +13,22 @@ enum _trace_type {
 };
 
 struct ray_t {
-	ray_t(const vec3& src, const vec3& dest) : start(src), delta(dest - src) {
-		is_swept = delta.x || delta.y || delta.z;
+	ray_t(const vec3& src, const vec3& dest) {
+		delta = vec_aligned(dest - src);
+		is_swept = (delta.length_sqr() != 0.0f);
+		extents.init();
+		world_axis_transform = NULL;
+		is_ray = true;
+		start_offset.init();
+		start = src;
 	}
 
-	vec3 start;
-	float u;
-	vec3 delta;
-	unsigned char u2[40]{};
-	bool is_ray{ true };
+	vec_aligned start;
+	vec_aligned delta;
+	vec_aligned start_offset;
+	vec_aligned extents;
+	const matrix3x4_t* world_axis_transform;
+	bool is_ray;
 	bool is_swept;
 };
 
