@@ -1,12 +1,13 @@
 #pragma once
 
+// 注意：pch.h 会通过 CMake 的 /FI 选项强制包含
+
 #define _CRT_SECURE_NO_WARNINGS
 
 #include "common.h"
 #include "globals.h"
 
 #include <string>
-#include <windows.h>
 #include <thread>
 
 enum _wait_for_module {

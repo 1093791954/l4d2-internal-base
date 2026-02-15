@@ -1,6 +1,7 @@
 #pragma once
 
-#include <windows.h>
+// 注意：pch.h 会通过 CMake 的 /FI 选项强制包含
+
 #include <cstdint>
 #include <vector>
 

@@ -2,7 +2,7 @@
 
 #include "esp.h"
 #include "world.h"
-#include "math.h"
+#include "game_math.h"
 #include "signatures.h"
 
 #include "checksum_md5.h"

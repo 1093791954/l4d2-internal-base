@@ -1,8 +1,9 @@
 #pragma once
 
+// 注意：pch.h 会通过 CMake 的 /FI 选项强制包含
+
 #include <string>
 #include <vector>
-#include <d3dx9.h>
 #include <array>
 
 #include "vars.h"

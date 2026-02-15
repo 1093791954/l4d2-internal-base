@@ -1,4 +1,4 @@
-#include "math.h"
+#include "game_math.h"
 
 #include "globals.h"
 #include "sdk.h"

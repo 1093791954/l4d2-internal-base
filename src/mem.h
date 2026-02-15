@@ -1,7 +1,8 @@
 #pragma once
 
+// 注意：pch.h 会通过 CMake 的 /FI 选项强制包含
+
 #include <string>
-#include <windows.h>
 
 using create_interface_fn = void*(*)(const char*, int*);
 

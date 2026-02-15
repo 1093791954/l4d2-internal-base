@@ -1,5 +1,16 @@
-## Ignore Visual Studio temporary files, build results, and etc
+## Build artifacts and IDE files
 
+# Visual Studio
 .vs/
-bin/
 obj/
+
+# CMake
+build-cmake/
+build_cmake/
+
+# Build output
+bin/
+lib/
+
+# Claude Code
+.claude/

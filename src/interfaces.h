@@ -1,5 +1,8 @@
 #pragma once
 
+// 注意：pch.h 会通过 CMake 的 /FI 选项强制包含
+// d3dx9.h 已在 pch.h 中包含
+
 #include "base_client.h"
 #include "client_mode.h"
 #include "client_entity_list.h"
@@ -15,8 +18,6 @@
 #include "model_info.h"
 #include "model_render.h"
 #include "debug_overlay.h"
-
-#include <d3dx9.h>
 
 struct interfaces {
 	c_base_client* m_client{};

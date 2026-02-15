@@ -1,6 +1,16 @@
 #pragma once
 
+// 注意：不要在这里包含 Windows.h 或标准库头文件
+// pch.h 会通过 CMake 的 /FI 选项强制包含到所有编译单元
+
 #include "vec2.h"
+#include <cmath>
+
+// 简单的 clamp 实现，避免 std::clamp 问题
+template<typename T>
+inline T clamp_val(T value, T min_val, T max_val) {
+	return value < min_val ? min_val : (value > max_val ? max_val : value);
+}
 
 class vec3 {
 public:
@@ -13,9 +23,9 @@ public:
 	}
 
 	inline void clamp() {
-		x = std::clamp(x, -89.0f, 89.0f);
-		y = std::clamp(std::remainder(y, 360.0f), -180.0f, 180.0f);
-		z = std::clamp(z, -50.0f, 50.0f);
+		x = clamp_val(x, -89.0f, 89.0f);
+		y = clamp_val(remainderf(y, 360.0f), -180.0f, 180.0f);
+		z = clamp_val(z, -50.0f, 50.0f);
 	}
 
 	float distance_to(const vec3& other) {
@@ -29,18 +39,18 @@ public:
 	}
 
 	inline void normalize() {
-		x = std::isfinite(x) ? std::remainderf(x, 360.0f) : 0.0f;
-		y = std::isfinite(y) ? std::remainderf(y, 360.0f) : 0.0f;
+		x = isfinite(x) ? remainderf(x, 360.0f) : 0.0f;
+		y = isfinite(y) ? remainderf(y, 360.0f) : 0.0f;
 		z = 0.0f;
 	}
 
 	inline float length()
 	{
-		return std::sqrt(length_sqr());
+		return sqrtf(length_sqr());
 	}
 
 	inline float length_2d() {
-		return std::sqrtf(x * x + y * y);
+		return sqrtf(x * x + y * y);
 	}
 
 	inline float length_sqr() {

@@ -1,7 +1,7 @@
 #include "esp.h"
 
 #include "vars.h"
-#include "math.h"
+#include "game_math.h"
 #include "renderer.h"
 
 void esp::render()

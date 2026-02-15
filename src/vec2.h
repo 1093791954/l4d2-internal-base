@@ -1,7 +1,10 @@
 #pragma once
 
+// 注意：不要在这里���含 Windows.h 或标准库头文件
+// pch.h 会通过 CMake 的 /FI 选项强制包含到所有编译单元
+// 如果需要数学函数，使用 <cmath>（已在 pch.h 中包含）
+
 #include <cmath>
-#include <algorithm>
 
 class vec2 {
 public:
@@ -38,7 +41,7 @@ public:
 	}
 
 	inline float length() {
-		return std::sqrt((x * x) + (y * y));
+		return sqrtf((x * x) + (y * y));
 	}
 
 	float x, y;

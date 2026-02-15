@@ -1,7 +1,7 @@
 #include "world.h"
 
 #include "vars.h"
-#include "math.h"
+#include "game_math.h"
 #include "fonts.h"
 
 static std::string weapon_name_list[] = {
