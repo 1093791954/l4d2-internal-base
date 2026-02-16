@@ -98,6 +98,7 @@ if(MSVC)
     target_compile_options(${PROJECT_NAME} PRIVATE
         /W0           # 关闭所有警告，与原项目一致
         /permissive   # 禁用严格一致性模式
+        /utf-8        # 使用 UTF-8 编码处理源文件和执行字符集
     )
 
     # 强制包含 pch.h 到 C++ 编译单元（不能应用于 MinHook 的 C 文件）

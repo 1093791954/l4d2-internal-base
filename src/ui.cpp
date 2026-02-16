@@ -6,6 +6,7 @@
 #include <sstream>
 #include <ui_fonts.hpp>
 #include <ui_sprites.hpp>
+#include <shlobj.h>
 
 PDIRECT3DTEXTURE9 g_L4D2Logo = nullptr;
 
@@ -28,15 +29,60 @@ void ui::initialise(IDirect3DDevice9* device)
 
 	ImGui::GetIO().Fonts->AddFontFromMemoryTTF(droidsans_ttf, sizeof(droidsans_ttf), 14.0f, &font_cfg);
 
+	/* 合并中文字体（微软雅黑）到默认字体 */
+	{
+		char font_path[MAX_PATH]{};
+		if (GetWindowsDirectoryA(font_path, MAX_PATH))
+		{
+			strcat_s(font_path, "\\Fonts\\msyh.ttc");
+
+			ImFontConfig chinese_cfg{};
+			chinese_cfg.MergeMode = true;
+			chinese_cfg.FontDataOwnedByAtlas = false;
+
+			ImGui::GetIO().Fonts->AddFontFromFileTTF(font_path, 14.0f, &chinese_cfg, ImGui::GetIO().Fonts->GetGlyphRangesChineseSimplifiedCommon());
+		}
+	}
+
 	/* Droid Sans 12px */
 	ImGui::fonts::small_font = ImGui::GetIO().Fonts->AddFontFromMemoryTTF(droidsans_ttf, sizeof(droidsans_ttf), 12.0f, &font_cfg);
-	
+
+	/* 合并中文字体到 small_font */
+	{
+		char font_path[MAX_PATH]{};
+		if (GetWindowsDirectoryA(font_path, MAX_PATH))
+		{
+			strcat_s(font_path, "\\Fonts\\msyh.ttc");
+
+			ImFontConfig chinese_cfg{};
+			chinese_cfg.MergeMode = true;
+			chinese_cfg.FontDataOwnedByAtlas = false;
+
+			ImGui::GetIO().Fonts->AddFontFromFileTTF(font_path, 12.0f, &chinese_cfg, ImGui::GetIO().Fonts->GetGlyphRangesChineseSimplifiedCommon());
+		}
+	}
+
 	/* Droid Sans 22px */
 	ImGui::fonts::high_font = ImGui::GetIO().Fonts->AddFontFromMemoryTTF(droidsans_ttf, sizeof(droidsans_ttf), 22.0f, &font_cfg);
-	
+
+	/* 合并中文字体到 high_font */
+	{
+		char font_path[MAX_PATH]{};
+		if (GetWindowsDirectoryA(font_path, MAX_PATH))
+		{
+			strcat_s(font_path, "\\Fonts\\msyh.ttc");
+
+			ImFontConfig chinese_cfg{};
+			chinese_cfg.MergeMode = true;
+			chinese_cfg.FontDataOwnedByAtlas = false;
+
+			ImGui::GetIO().Fonts->AddFontFromFileTTF(font_path, 22.0f, &chinese_cfg, ImGui::GetIO().Fonts->GetGlyphRangesChineseSimplifiedCommon());
+		}
+	}
+
 	/* Tab Icons 14px */
 	ImGui::fonts::small_icon_font = ImGui::GetIO().Fonts->AddFontFromMemoryTTF(icons_ttf, sizeof(icons_ttf), 14.0f, &font_cfg);
-	
+
 	/* Tab Icons 16px */
 	ImGui::fonts::icon_font = ImGui::GetIO().Fonts->AddFontFromMemoryTTF(icons_ttf, sizeof(icons_ttf), 16.0f, &font_cfg);
 
@@ -108,51 +154,51 @@ void ui::draw_main_frame()
 	if (ImGui::InitFrame("##MainFrame", ImVec2(525.0f, 420.0f)))
 	{
 		auto esp_content = []() {
-			ImGui::SetPreviewBar("ESP", "Display player boxes & etc");
+			ImGui::SetPreviewBar("透视", "显示玩家方框等");
 
-			ImGui::MakeChild("Box", []() {
+			ImGui::MakeChild("方框", []() {
 				ImGui::ColorEdit3("##box_color", "visuals->players->box->col");
 				ImGui::SameLine();
 
-				ImGui::Combo("Type", "visuals->players->box->type", "Default\0Corner");
+				ImGui::Combo("类型", "visuals->players->box->type", "默认\0角落");
 			}, "visuals->players->box");
 
-			ImGui::MakeChild("Health", []() {
+			ImGui::MakeChild("生命值", []() {
 				ImGui::ColorEdit3("##health_color", "visuals->players->health->col");
 				ImGui::SameLine();
 
-				ImGui::Combo("Type", "visuals->players->health->type", "Default\0Colored Health");
+				ImGui::Combo("类型", "visuals->players->health->type", "默认\0彩色生命");
 			}, "visuals->players->health");
 		};
 
 		auto visuals_content = []() {
-			ImGui::SetPreviewBar("Visuals", "Display some entity objects");
+			ImGui::SetPreviewBar("视觉", "显示一些实体对象");
 
-			ImGui::MakeChild("Spawn Objects", []() {
+			ImGui::MakeChild("生成物品", []() {
 				ImGui::ColorEdit3("##spawn_objects_col", "visuals->spawn_objects->col");
 				ImGui::SameLine();
 
-				ImGui::Combo("Type", "visuals->spawn_objects->type", "Text\0Icon");
-				ImGui::SliderFloat("Distance", "visuals->spawn_objects->distance", 300.0f, 5000.0f);
+				ImGui::Combo("类型", "visuals->spawn_objects->type", "文字\0图标");
+				ImGui::SliderFloat("距离", "visuals->spawn_objects->distance", 300.0f, 5000.0f);
 			}, "visuals->spawn_objects");
 
-			ImGui::MakeChild("Special Infected", []() {
+			ImGui::MakeChild("特感", []() {
 				ImGui::ColorEdit3("##special_infected_col", "visuals->special_infected->col");
 			}, "visuals->special_infected");
 		};
 
 		auto misc_content = []() {
-			ImGui::SetPreviewBar("Misc", "Include various helpful game movement");
+			ImGui::SetPreviewBar("杂项", "包含各种实用的游戏移动功能");
 
-			ImGui::MakeChild("Auto Pistol", "misc->autopistol");
-			ImGui::MakeChild("Bunnyhop", "misc->bhop");
-			ImGui::MakeChild("Auto Strafe", "misc->autostrafe");
+			ImGui::MakeChild("自动手枪", "misc->autopistol");
+			ImGui::MakeChild("连跳", "misc->bhop");
+			ImGui::MakeChild("自动转向", "misc->autostrafe");
 		};
 
 		auto settings_content = []() {
 			static char config_name[16] = "sample_cfg";
 
-			ImGui::SetPreviewBar("Settings", "Save configurations & Game utilities");
+			ImGui::SetPreviewBar("设置", "保存配置和游戏工具");
 
 			ImGui::PushItemWidth(381.0f);
 			{
@@ -163,16 +209,16 @@ void ui::draw_main_frame()
 
 			ImGui::SameLine();
 
-			if (ImGui::Button("Load"))
+			if (ImGui::Button("加载"))
 				config::load(config_name);
 
 			ImGui::SameLine();
 
-			if (ImGui::Button("Save"))
+			if (ImGui::Button("保存"))
 				config::save(config_name);
 
 			ImGui::SetCursorPosX(50.0f);
-			if (ImGui::Button("Unload", ImVec2(465.0f, 0.0f)))
+			if (ImGui::Button("卸载", ImVec2(465.0f, 0.0f)))
 				g::done = true;
 		};
 
@@ -220,18 +266,18 @@ void ui::draw_watermark()
 		if (g::hours_in_game > 0)
 		{
 			if (g::hours_in_game >= 24)
-				ss << " | " + std::to_string(g::hours_in_game) + "h Playing";
+				ss << " | " + std::to_string(g::hours_in_game) + "小时游戏中";
 
 			else
-				ss << " | " + std::to_string(g::hours_in_game) + "h " + std::to_string(g::minutes_in_game) + "m Playing";
+				ss << " | " + std::to_string(g::hours_in_game) + "小时" + std::to_string(g::minutes_in_game) + "分游戏中";
 		}
 		else {
-			ss << " | " + std::to_string(g::minutes_in_game) + "m " + std::to_string(g::seconds_in_game) + "s Playing";
+			ss << " | " + std::to_string(g::minutes_in_game) + "分" + std::to_string(g::seconds_in_game) + "秒游戏中";
 		}
 	}
 
 	if (v[2])
-		ss << " | " << std::to_string(static_cast<int>(1.f / g_l4d2.m_player_info_mgr->get_globals()->absolute_frame_time)) << " fps";
+		ss << " | " << std::to_string(static_cast<int>(1.f / g_l4d2.m_player_info_mgr->get_globals()->absolute_frame_time)) << "帧";
 
 
 	auto width = ImGui::CalcTextSize(ss.str().c_str()).x;
@@ -271,9 +317,9 @@ void ui::draw_watermark()
 				ImGui::PushStyleColor(ImGuiCol_FrameBgActive, ImVec4(0.15f, 0.15f, 0.15f, 1.00f));
 				ImGui::PushStyleColor(ImGuiCol_CheckMark, ImVec4(1.0f, 1.0f, 1.0f, 0.67f));
 
-				ImGui::Checkbox("Current Time", &v[0]);
-				ImGui::Checkbox("Time Playing", &v[1]);
-				ImGui::Checkbox("Show FPS", &v[2]);
+				ImGui::Checkbox("当前时间", &v[0]);
+				ImGui::Checkbox("游戏时长", &v[1]);
+				ImGui::Checkbox("显示帧率", &v[2]);
 
 				ImGui::PopStyleColor();
 				ImGui::PopStyleColor();
