@@ -145,3 +145,6 @@ message(STATUS "Project: ${PROJECT_NAME}")
 message(STATUS "DirectX Include: ${DirectX_INCLUDE_DIRS}")
 message(STATUS "DirectX Libraries: ${DirectX_LIBRARIES}")
 message(STATUS "Build Type: ${CMAKE_BUILD_TYPE}")
+
+# 添加注入器子项目
+add_subdirectory(Injector)
