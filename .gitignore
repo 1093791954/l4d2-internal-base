@@ -5,6 +5,7 @@
 obj/
 
 # CMake
+build/
 build-cmake/
 build_cmake/
 
