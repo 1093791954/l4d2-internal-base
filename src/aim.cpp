@@ -3,6 +3,7 @@
 #include "game_math.h"
 #include "vars.h"
 #include "trace_ray.h"
+#include "base_player.h"
 #include <cmath>
 
 void c_aimbot::initialize() {
@@ -189,6 +190,11 @@ bool c_aimbot::validate_target(const vec3& eye_pos) {
             if (type != m_target.type)
                 return false;
 
+            // 检查目标是否存活且非休眠状态
+            auto player = reinterpret_cast<c_base_player*>(entity);
+            if (!player || player->get_health() <= 0 || player->get_dormant())
+                return false;
+
             // 可见性检测：检查目标是否被遮挡
             if (config.visibility_check) {
                 int bone_idx = get_target_bone_index(type);
@@ -233,6 +239,11 @@ void c_aimbot::find_new_target(const vec3& view_angles, const vec3& eye_pos) {
 
         auto type = get_infected_type(class_list->m_class_id);
         if (type == special_infected_type::count)
+            continue;
+
+        // 检查特感是否存活且非休眠状态
+        auto player = reinterpret_cast<c_base_player*>(entity);
+        if (!player || player->get_health() <= 0 || player->get_dormant())
             continue;
 
         // 获取目标骨骼点

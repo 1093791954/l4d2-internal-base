@@ -4,6 +4,7 @@
 #include "game_math.h"
 #include "fonts.h"
 #include "renderer.h"
+#include "base_player.h"
 #include <sstream>
 
 static std::string weapon_name_list[] = {
@@ -133,6 +134,10 @@ void visuals::draw_special_infected(c_base_entity* entity)
 	{
 		if (class_list->m_class_id == infected.second)
 		{
+			// 检查特感是否存活且非休眠状态
+			auto player = reinterpret_cast<c_base_player*>(entity);
+			if (!player || player->get_health() <= 0 || player->get_dormant())
+				return;
 			// 绘制名称
 			vec3 pos{};
 			if (math::w2s(entity->get_origin(), pos))
