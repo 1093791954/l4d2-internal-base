@@ -12,6 +12,16 @@ enum _trace_type {
 	TRACE_EVERYTHING_FILTER_PROPS,
 };
 
+// 射线检测掩码定义
+#define CONTENTS_SOLID			0x1		// 固体物体
+#define CONTENTS_MOVEABLE		0x4000	// 可移动物体
+#define CONTENTS_MONSTER		0x2000000	// 怪物/AI
+#define CONTENTS_WINDOW			0x2		// 窗户
+#define CONTENTS_DEBRIS			0x4000000	// 碎片
+#define CONTENTS_HITBOX			0x40000000	// 命中框
+
+#define MASK_SHOT				(CONTENTS_SOLID|CONTENTS_MOVEABLE|CONTENTS_MONSTER|CONTENTS_WINDOW|CONTENTS_DEBRIS|CONTENTS_HITBOX)
+
 struct ray_t {
 	ray_t(const vec3& src, const vec3& dest) {
 		delta = vec_aligned(dest - src);
