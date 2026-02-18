@@ -196,6 +196,17 @@ void ui::draw_main_frame()
 			}, "visuals->special_infected");
 		};
 
+		auto aim_content = []() {
+			ImGui::SetPreviewBar("自瞄", "按住左Shift键瞄准特感骨骼点");
+
+			ImGui::MakeChild("特感自瞄", []() {
+				ImGui::Combo("瞄准部位", "aim->bone", "头部\0胸部\0腰部");
+				ImGui::SliderFloat("视野范围", "aim->fov", 5.0f, 90.0f);
+				ImGui::SliderFloat("平滑度", "aim->smooth", 0.0f, 100.0f);
+				ImGui::SliderFloat("最大距离", "aim->max_distance", 500.0f, 5000.0f);
+			}, "aim->enabled");
+		};
+
 		auto misc_content = []() {
 			ImGui::SetPreviewBar("杂项", "包含各种实用的游戏移动功能");
 
@@ -234,6 +245,7 @@ void ui::draw_main_frame()
 		tab_content_t tab_list[] = {
 			{ "C", esp_content },
 			{ "B", visuals_content },
+			{ "A", aim_content },
 			{ "D", misc_content },
 			{ "E", settings_content },
 		};

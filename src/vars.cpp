@@ -39,6 +39,13 @@ void vars::initialise()
 	set("misc->autopistol", false);
 	set("misc->bhop", false);
 	set("misc->autostrafe", false);
+
+	// 自瞄配置
+	set("aim->enabled", false);
+	set("aim->fov", 30.0f);
+	set("aim->smooth", 10.0f);
+	set("aim->bone", 0); // 0=头部, 1=胸部, 2=腰部
+	set("aim->max_distance", 2000.0f);
 }
 
 void vars::set(const std::string& key, const varType& value)

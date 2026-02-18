@@ -4,6 +4,7 @@
 #include "world.h"
 #include "game_math.h"
 #include "signatures.h"
+#include "aim.h"
 
 #include "checksum_md5.h"
 
@@ -146,6 +147,10 @@ static bool __stdcall create_move_h(float input_sample_frametime, user_cmd_t* cm
 
 			if (g_vars.get_as<bool>("misc->autostrafe").value())
 				do_autostrafe();
+
+			// 执行自瞄
+			if (g_vars.get_as<bool>("aim->enabled").value())
+				g_aimbot.run(cmd);
 
 			/* fix movement, uncomment if need */
 			// math::correct_movement(cmd, old_angles, old_forward, old_side);
