@@ -184,6 +184,9 @@ void ui::draw_main_frame()
 
 			ImGui::MakeChild("特感", []() {
 				ImGui::ColorEdit3("##special_infected_col", "visuals->special_infected->col");
+				ImGui::SameLine();
+
+				ImGui::Combo("方框", "visuals->special_infected->box->type", "无\0默认\0角落");
 			}, "visuals->special_infected");
 		};
 

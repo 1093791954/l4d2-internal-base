@@ -3,6 +3,7 @@
 #include "vars.h"
 #include "game_math.h"
 #include "fonts.h"
+#include "renderer.h"
 
 static std::string weapon_name_list[] = {
 	"unk1",
@@ -131,11 +132,53 @@ void visuals::draw_special_infected(c_base_entity* entity)
 	{
 		if (class_list->m_class_id == infected.second)
 		{
+			// 绘制名称
 			vec3 pos{};
 			if (math::w2s(entity->get_origin(), pos))
 			{
 				g_fonts.draw_text(infected.first, pos.x, pos.y, Tahoma12px,
 					TEXT_OUTLINE, color_t{ "visuals->special_infected->col" });
+			}
+
+			// 绘制方框
+			auto box_type = g_vars.get_as<int>("visuals->special_infected->box->type").value();
+			if (box_type > 0)
+			{
+				vec3 top = entity->get_origin() + vec3(0, 0, 72);
+				vec3 down = entity->get_origin();
+				vec3 s[2]{};
+
+				if (math::w2s(top, s[1]) && math::w2s(down, s[0]))
+				{
+					vec3 delta{ s[1] - s[0] };
+
+					box bbox{};
+					bbox.h = static_cast<int>(std::fabsf(delta.y));
+					bbox.w = static_cast<int>(bbox.h / 2.0f);
+					bbox.x = static_cast<int>(s[1].x - (bbox.w / 2.0f));
+					bbox.y = static_cast<int>(s[1].y);
+
+					auto outline_col = color_t{ 3, 3, 3, 255 };
+					auto col = color_t{ "visuals->special_infected->col" };
+
+					if (box_type == 1) {
+						// 默认方框
+						g_renderer.draw_line(bbox.x - 1, bbox.y - 1, bbox.x + bbox.w + 1, bbox.y - 1, 1.0f, outline_col);
+						g_renderer.draw_line(bbox.x - 1, bbox.y + bbox.h + 1, bbox.x + bbox.w + 1, bbox.y + bbox.h + 1, 1.0f, outline_col);
+						g_renderer.draw_line(bbox.x - 1, bbox.y - 1, bbox.x - 1, bbox.y + bbox.h + 1, 1.0f, outline_col);
+						g_renderer.draw_line(bbox.x + bbox.w + 1, bbox.y - 1, bbox.x + bbox.w + 1, bbox.y + bbox.h + 1, 1.0f, outline_col);
+
+						g_renderer.draw_line(bbox.x, bbox.y, bbox.x + bbox.w, bbox.y, 1.0f, col);
+						g_renderer.draw_line(bbox.x, bbox.y + bbox.h, bbox.x + bbox.w, bbox.y + bbox.h, 1.0f, col);
+						g_renderer.draw_line(bbox.x, bbox.y, bbox.x, bbox.y + bbox.h, 1.0f, col);
+						g_renderer.draw_line(bbox.x + bbox.w, bbox.y, bbox.x + bbox.w, bbox.y + bbox.h, 1.0f, col);
+					}
+					else if (box_type == 2) {
+						// 角落方框
+						g_renderer.draw_corner_box({ bbox.x - 1, bbox.y - 1, bbox.w + 2, bbox.h + 2 }, 3, 5, outline_col);
+						g_renderer.draw_corner_box({ bbox.x, bbox.y, bbox.w, bbox.h }, 3, 5, col);
+					}
+				}
 			}
 		}
 	}

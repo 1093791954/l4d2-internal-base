@@ -26,6 +26,7 @@ void vars::initialise()
 	set("visuals->spawn_objects->col->b", 0);
 
 	set("visuals->special_infected", false);
+	set("visuals->special_infected->box->type", 0);
 	set("visuals->special_infected->col->r", 210);
 	set("visuals->special_infected->col->g", 50);
 	set("visuals->special_infected->col->b", 0);
