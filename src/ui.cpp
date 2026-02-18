@@ -201,6 +201,7 @@ void ui::draw_main_frame()
 
 			ImGui::MakeChild("特感自瞄", []() {
 				ImGui::Combo("瞄准部位", "aim->bone", "头部\0胸部\0腰部");
+				ImGui::Combo("锁定模式", "aim->lock_mode", "始终锁定最近目标\0锁定目标直到死亡");
 				ImGui::SliderFloat("视野范围", "aim->fov", 5.0f, 90.0f);
 				ImGui::SliderFloat("平滑度", "aim->smooth", 0.0f, 100.0f);
 				ImGui::SliderFloat("最大距离", "aim->max_distance", 500.0f, 5000.0f);

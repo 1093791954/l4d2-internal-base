@@ -16,6 +16,7 @@ void c_aimbot::update_config() {
     config.smooth = g_vars.get_as<float>("aim->smooth").value_or(10.0f);
     config.target_bone = g_vars.get_as<int>("aim->bone").value_or(0);
     config.max_distance = g_vars.get_as<float>("aim->max_distance").value_or(2000.0f);
+    config.lock_mode = g_vars.get_as<int>("aim->lock_mode").value_or(0);
 }
 
 special_infected_type c_aimbot::get_infected_type(int class_id) {
@@ -233,9 +234,15 @@ void c_aimbot::run(user_cmd_t* cmd) {
     // 添加眼睛高度偏移（约 64 单位）
     eye_pos.z += 64.0f;
 
-    // 验证当前锁定目标，如果无效则寻找新目标
-    if (!validate_target()) {
+    // 根据锁定模式处理目标选择
+    if (config.lock_mode == 0) {
+        // 模式0：始终锁定最近目标 - 每次都重新寻找
         find_new_target(cmd->viewangles, eye_pos);
+    } else {
+        // 模式1：锁定直到死亡 - 验证目标无效后才寻找新目标
+        if (!validate_target()) {
+            find_new_target(cmd->viewangles, eye_pos);
+        }
     }
 
     // 如果没有有效目标，直接返回

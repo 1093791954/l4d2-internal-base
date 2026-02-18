@@ -69,6 +69,9 @@ struct aim_config {
 
     // 最大瞄准距离
     float max_distance = 2000.0f;
+
+    // 锁定模式：0=始终锁定最近目标, 1=锁定直到死亡
+    int lock_mode = 0;
 };
 
 // 锁定目标信息

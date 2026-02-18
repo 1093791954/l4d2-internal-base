@@ -46,6 +46,7 @@ void vars::initialise()
 	set("aim->smooth", 10.0f);
 	set("aim->bone", 0); // 0=头部, 1=胸部, 2=腰部
 	set("aim->max_distance", 2000.0f);
+	set("aim->lock_mode", 0); // 0=始终锁定最近目标, 1=锁定直到死亡
 }
 
 void vars::set(const std::string& key, const varType& value)
