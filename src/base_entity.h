@@ -3,6 +3,8 @@
 #include "client_class.h"
 #include "vec3.h"
 
+struct matrix3x4_t;
+
 enum {
 	MOVETYPE_NONE,
 	MOVETYPE_ISOMETRIC,
@@ -63,4 +65,14 @@ public:
 	* Get entity move type.
 	*/
 	int get_move_type();
+
+	/*
+	* SetupBones - 获取骨骼矩阵
+	*/
+	bool setup_bones(matrix3x4_t* bone_matrix, int max_bones, int bone_mask, float curtime);
+
+	/*
+	* GetBonePosition - 获取指定索引的骨骼位置
+	*/
+	vec3 get_bone_position(int bone_index);
 };

@@ -4,6 +4,7 @@
 #include "game_math.h"
 #include "fonts.h"
 #include "renderer.h"
+#include <sstream>
 
 static std::string weapon_name_list[] = {
 	"unk1",
@@ -180,6 +181,40 @@ void visuals::draw_special_infected(c_base_entity* entity)
 					}
 				}
 			}
+
+			// 绘制骨骼 (独立于方框，只要启用了特感显示就可以绘制骨骼)
+			if (g_vars.get_as<bool>("visuals->special_infected->skeleton").value()) {
+				draw_skeleton(entity);
+			}
+		}
+	}
+}
+
+void visuals::draw_skeleton(c_base_entity* entity)
+{
+	// 绘制常见骨骼点 (0-19)，用于测试识别有效骨骼索引
+	// 用户测试后可告诉我应该保留哪些骨骼点
+	auto skeleton_col = color_t{ "visuals->special_infected->skeleton->col" };
+	auto show_index = g_vars.get_as<bool>("visuals->special_infected->skeleton->show_index").value();
+
+	for (int i = 0; i < 20; i++) {
+		vec3 bone_pos = entity->get_bone_position(i);
+		if (bone_pos.x == 0 && bone_pos.y == 0 && bone_pos.z == 0)
+			continue;
+
+		vec3 screen_pos{};
+		if (!math::w2s(bone_pos, screen_pos))
+			continue;
+
+		// 绘制骨骼点 (圆点)
+		g_renderer.draw_filled_circle(screen_pos.x, screen_pos.y, 3.0f, 8, skeleton_col);
+
+		// 显示骨骼序号
+		if (show_index) {
+			std::stringstream ss;
+			ss << i;
+			g_fonts.draw_text(ss.str(), static_cast<int>(screen_pos.x + 5), static_cast<int>(screen_pos.y - 5),
+				Tahoma12px, TEXT_NONE, skeleton_col);
 		}
 	}
 }

@@ -259,6 +259,14 @@ namespace ImGui
 		}
 	}
 
+	inline void Checkbox(const char* label, const std::string& key)
+	{
+		bool v = g_vars.get_as<bool>(key).value_or(false);
+		if (Checkbox(label, &v)) {
+			g_vars.set(key, v);
+		}
+	}
+
 	inline void SetupTabs(tab_content_t t_list[], int max_tabs, int* selected)
 	{
 		PushStyleVar(ImGuiStyleVar_ItemSpacing, ImVec2(0.0f, 0.0f));

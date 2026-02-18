@@ -8,6 +8,7 @@ struct visuals {
 private:
 	void draw_special_infected(c_base_entity* entity);
 	void draw_spawn_objects(c_base_entity* entity);
+	void draw_skeleton(c_base_entity* entity);
 };
 
 inline visuals g_visuals{};

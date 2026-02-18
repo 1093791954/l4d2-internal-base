@@ -101,6 +101,8 @@ struct renderer {
 	void draw_filled_rect(const rect_t pos, color_t color);
 	void draw_rect(const rect_t pos, color_t color);
 	void draw_corner_box(const rect_t pos, float cx, float cy, color_t color);
+	void draw_circle(float x, float y, float radius, int segments, color_t color);
+	void draw_filled_circle(float x, float y, float radius, int segments, color_t color);
 
 	// End render states
 	void end_modificated_states();

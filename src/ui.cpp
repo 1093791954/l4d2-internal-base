@@ -187,6 +187,12 @@ void ui::draw_main_frame()
 				ImGui::SameLine();
 
 				ImGui::Combo("方框", "visuals->special_infected->box->type", "无\0默认\0角落");
+
+				if (ImGui::CollapsingHeader("骨骼绘制")) {
+					ImGui::Checkbox("启用骨骼", "visuals->special_infected->skeleton");
+					ImGui::Checkbox("显示骨骼序号", "visuals->special_infected->skeleton->show_index");
+					ImGui::ColorEdit3("骨骼颜色", "visuals->special_infected->skeleton->col");
+				}
 			}, "visuals->special_infected");
 		};
 

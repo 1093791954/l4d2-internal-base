@@ -30,6 +30,11 @@ void vars::initialise()
 	set("visuals->special_infected->col->r", 210);
 	set("visuals->special_infected->col->g", 50);
 	set("visuals->special_infected->col->b", 0);
+	set("visuals->special_infected->skeleton", false);
+	set("visuals->special_infected->skeleton->col->r", 255);
+	set("visuals->special_infected->skeleton->col->g", 255);
+	set("visuals->special_infected->skeleton->col->b", 255);
+	set("visuals->special_infected->skeleton->show_index", false);
 
 	set("misc->autopistol", false);
 	set("misc->bhop", false);

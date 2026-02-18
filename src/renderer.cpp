@@ -1,6 +1,8 @@
 #include "renderer.h"
 #include "globals.h"
 
+#include <cmath>
+
 bool renderer::initialise(IDirect3DDevice9* device)
 {
 	return create_objects(device);
@@ -133,6 +135,49 @@ void renderer::draw_corner_box(const rect_t pos, float cx, float cy, color_t col
 
 	draw_line(pos.x + pos.w, pos.y + pos.h, pos.x + pos.w - (pos.w / cx), pos.y + pos.h, 1.0f, color);
 	draw_line(pos.x + pos.w, pos.y + pos.h, pos.x + pos.w, pos.y + pos.h - (pos.h / cy), 1.0f, color);
+}
+
+void renderer::draw_circle(float x, float y, float radius, int segments, color_t color)
+{
+	float step = 3.14159265f * 2.0f / segments;
+	for (int i = 0; i < segments; i++)
+	{
+		float theta1 = step * i;
+		float theta2 = step * (i + 1);
+
+		float x1 = x + radius * cosf(theta1);
+		float y1 = y + radius * sinf(theta1);
+		float x2 = x + radius * cosf(theta2);
+		float y2 = y + radius * sinf(theta2);
+
+		draw_line(x1, y1, x2, y2, 1.0f, color);
+	}
+}
+
+void renderer::draw_filled_circle(float x, float y, float radius, int segments, color_t color)
+{
+	float step = 3.14159265f * 2.0f / segments;
+
+	for (int i = 0; i < segments; i++)
+	{
+		float theta1 = step * i;
+		float theta2 = step * (i + 1);
+
+		float x1 = x + radius * cosf(theta1);
+		float y1 = y + radius * sinf(theta1);
+		float x2 = x + radius * cosf(theta2);
+		float y2 = y + radius * sinf(theta2);
+
+		// 绘制扇形填充三角形
+		vertex_t v[3] = {
+			{ x, y, 0.0f, 1.0f, color.get() },
+			{ x1, y1, 0.0f, 1.0f, color.get() },
+			{ x2, y2, 0.0f, 1.0f, color.get() }
+		};
+
+		m_device->SetTexture(0, nullptr);
+		m_device->DrawPrimitiveUP(D3DPT_TRIANGLELIST, 1, v, sizeof(vertex_t));
+	}
 }
 
 void renderer::end_modificated_states()
