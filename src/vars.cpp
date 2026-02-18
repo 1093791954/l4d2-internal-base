@@ -47,6 +47,7 @@ void vars::initialise()
 	set("aim->bone", 0); // 0=头部, 1=胸部, 2=腰部
 	set("aim->max_distance", 2000.0f);
 	set("aim->lock_mode", 0); // 0=始终锁定最近目标, 1=锁定直到死亡
+	set("aim->visibility_check", true); // 可见性检测：只瞄准未被遮挡的目标
 }
 
 void vars::set(const std::string& key, const varType& value)

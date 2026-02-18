@@ -205,6 +205,7 @@ void ui::draw_main_frame()
 				ImGui::SliderFloat("视野范围", "aim->fov", 5.0f, 90.0f);
 				ImGui::SliderFloat("平滑度", "aim->smooth", 0.0f, 100.0f);
 				ImGui::SliderFloat("最大距离", "aim->max_distance", 500.0f, 5000.0f);
+				ImGui::Checkbox("可见性检测 (跳过被遮挡目标)", "aim->visibility_check");
 			}, "aim->enabled");
 		};
 

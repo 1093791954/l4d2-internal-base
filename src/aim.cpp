@@ -2,6 +2,7 @@
 
 #include "game_math.h"
 #include "vars.h"
+#include "trace_ray.h"
 #include <cmath>
 
 void c_aimbot::initialize() {
@@ -17,6 +18,7 @@ void c_aimbot::update_config() {
     config.target_bone = g_vars.get_as<int>("aim->bone").value_or(0);
     config.max_distance = g_vars.get_as<float>("aim->max_distance").value_or(2000.0f);
     config.lock_mode = g_vars.get_as<int>("aim->lock_mode").value_or(0);
+    config.visibility_check = g_vars.get_as<bool>("aim->visibility_check").value_or(true);
 }
 
 special_infected_type c_aimbot::get_infected_type(int class_id) {
@@ -74,6 +76,43 @@ void c_aimbot::clamp_angles(vec3& angles) {
     angles.z = 0.0f;
 }
 
+bool c_aimbot::is_visible(c_base_entity* entity, const vec3& target_pos, const vec3& eye_pos) {
+    // 如果未启用可见性检测，直接返回可见
+    if (!config.visibility_check)
+        return true;
+
+    // 如果没有射线检测接口，默认返回可见
+    if (!g_l4d2.m_tracers)
+        return true;
+
+    // 创建射线（从眼睛位置到目标位置）
+    ray_t ray(eye_pos, target_pos);
+
+    // 创建过滤器，跳过本地玩家自身
+    auto local = g_l4d2.get_local();
+    if (!local)
+        return false;
+
+    trace_filter_t filter(local);
+    trace_t trace_result;
+
+    // 执行射线检测
+    g_l4d2.m_tracers->trace(ray, MASK_SHOT, &filter, &trace_result);
+
+    // 检查是否击中目标实体
+    // m_fraction >= 1.0f 表示射线到达终点，没有碰到任何障碍物
+    // 或者击中的实体就是我们想要瞄准的目标
+    if (trace_result.m_fraction >= 1.0f)
+        return true;
+
+    // 如果射线击中了其他实体，检查是否是目标实体
+    if (trace_result.m_entity == entity)
+        return true;
+
+    // 被其他障碍物遮挡
+    return false;
+}
+
 float c_aimbot::calc_fov(const vec3& view_angles, const vec3& target_pos, const vec3& eye_pos) {
     vec3 aim_direction;
     float yaw = math::DEG2RAD(view_angles.y);
@@ -128,7 +167,7 @@ vec3 c_aimbot::smooth_aim(const vec3& current, const vec3& target, float factor)
     return smoothed;
 }
 
-bool c_aimbot::validate_target() {
+bool c_aimbot::validate_target(const vec3& eye_pos) {
     if (!m_target.is_valid || !m_target.entity)
         return false;
 
@@ -147,8 +186,22 @@ bool c_aimbot::validate_target() {
                 return false;
 
             auto type = get_infected_type(class_list->m_class_id);
-            if (type == m_target.type)
-                return true;
+            if (type != m_target.type)
+                return false;
+
+            // 可见性检测：检查目标是否被遮挡
+            if (config.visibility_check) {
+                int bone_idx = get_target_bone_index(type);
+                if (bone_idx >= 0) {
+                    vec3 bone_pos = entity->get_bone_position(bone_idx);
+                    if (bone_pos.x != 0 || bone_pos.y != 0 || bone_pos.z != 0) {
+                        if (!is_visible(entity, bone_pos, eye_pos))
+                            return false;  // 目标被遮挡，无效
+                    }
+                }
+            }
+
+            return true;
         }
     }
 
@@ -193,6 +246,10 @@ void c_aimbot::find_new_target(const vec3& view_angles, const vec3& eye_pos) {
 
         // 检查距离
         if (bone_pos.distance_to(eye_pos) > config.max_distance)
+            continue;
+
+        // 可见性检测：跳过被遮挡的目标
+        if (config.visibility_check && !is_visible(entity, bone_pos, eye_pos))
             continue;
 
         // 计算FOV
@@ -240,7 +297,7 @@ void c_aimbot::run(user_cmd_t* cmd) {
         find_new_target(cmd->viewangles, eye_pos);
     } else {
         // 模式1：锁定直到死亡 - 验证目标无效后才寻找新目标
-        if (!validate_target()) {
+        if (!validate_target(eye_pos)) {
             find_new_target(cmd->viewangles, eye_pos);
         }
     }

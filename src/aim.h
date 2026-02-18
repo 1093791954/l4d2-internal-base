@@ -72,6 +72,9 @@ struct aim_config {
 
     // 锁定模式：0=始终锁定最近目标, 1=锁定直到死亡
     int lock_mode = 0;
+
+    // 可见性检测：只瞄准没有被障碍物遮挡的目标
+    bool visibility_check = true;
 };
 
 // 锁定目标信息
@@ -128,7 +131,10 @@ private:
     void find_new_target(const vec3& view_angles, const vec3& eye_pos);
 
     // 验证锁定目标是否仍然有效
-    bool validate_target();
+    bool validate_target(const vec3& eye_pos);
+
+    // 检查目标是否可见（没有被障碍物遮挡）
+    bool is_visible(c_base_entity* entity, const vec3& target_pos, const vec3& eye_pos);
 
     // 归一化角度（确保在 -180 到 180 范围内）
     void normalize_angles(vec3& angles);
